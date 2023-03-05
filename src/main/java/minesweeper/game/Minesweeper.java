@@ -58,8 +58,8 @@ public class Minesweeper extends Application {
     public void start(Stage stage) throws IOException {
         stage.setTitle("Medialab Minesweeper");
         stage.setScene(createScene());
-        stage.show();
         stage.setResizable(false);
+        stage.show();
     }
 
     public static void main(String[] args) {
