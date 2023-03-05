@@ -24,11 +24,13 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -57,7 +59,7 @@ public class Minesweeper extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         stage.setTitle("Medialab Minesweeper");
-        stage.setScene(createScene());
+        stage.setScene(createScene(new Game(), 640));
         stage.setResizable(false);
         stage.show();
     }
@@ -66,20 +68,8 @@ public class Minesweeper extends Application {
         launch();
     }
 
-    public MenuBar menuRibbon() {
-        // MenuBar menuBar = new 
-        return new MenuBar(new DropdownMenu("Application", "Create", "Load", "Start", "Exit"), new DropdownMenu("Details", "Rounds", "Solution"));
-    }
-
-    public HBox informationRibbon() {
-        HBox hBox = new HBox(5, new Text("Time"), new Separator(Orientation.VERTICAL), new Text("Bombs"), new Separator(Orientation.VERTICAL), new Text("Marked"));
-        hBox.setAlignment(Pos.CENTER);
-        return hBox;
-    }
-
-    public Scene createScene() {
-        BorderPane sceneBorder = new BorderPane(null, new HBox(menuRibbon(), informationRibbon()), null, null, null);
-        return new Scene(sceneBorder, 640, 640);
+    public Scene createScene(Game game, double size) {
+        return new Scene(new SceneRoot(game, size));
     }
 }
 
