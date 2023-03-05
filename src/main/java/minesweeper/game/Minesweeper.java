@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Parent;
@@ -23,6 +24,8 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -56,6 +59,7 @@ public class Minesweeper extends Application {
         stage.setTitle("Medialab Minesweeper");
         stage.setScene(createScene());
         stage.show();
+        stage.setResizable(false);
     }
 
     public static void main(String[] args) {
@@ -68,11 +72,14 @@ public class Minesweeper extends Application {
     }
 
     public HBox informationRibbon() {
-        return new HBox(5, new Text("Time"), new Text("Bombs"), new Text("Marked"));
+        HBox hBox = new HBox(5, new Text("Time"), new Separator(Orientation.VERTICAL), new Text("Bombs"), new Separator(Orientation.VERTICAL), new Text("Marked"));
+        hBox.setAlignment(Pos.CENTER);
+        return hBox;
     }
 
     public Scene createScene() {
-        return new Scene(menuRibbon());
+        BorderPane sceneBorder = new BorderPane(null, new HBox(menuRibbon(), informationRibbon()), null, null, null);
+        return new Scene(sceneBorder, 640, 640);
     }
 }
 
