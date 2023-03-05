@@ -62,10 +62,10 @@ public class Minesweeper extends Application {
         launch();
     }
 
-    public MenuBar menuRibbon() {
-        // MenuBar menuBar = new 
-        return new MenuBar(DropdownMenu("Application", "Create", "Load", "Start", "Exit"), DropdownMenu("Details", "Rounds", "Solution"));
-    }
+    // public MenuBar menuRibbon() {
+    //     // MenuBar menuBar = new 
+    //     return new MenuBar(DropdownMenu("Application", "Create", "Load", "Start", "Exit"), DropdownMenu("Details", "Rounds", "Solution"));
+    // }
 
     public HBox informationRibbon() {
         return new HBox(5, new Text("Time"), new Text("Bombs"), new Text("Marked"));
