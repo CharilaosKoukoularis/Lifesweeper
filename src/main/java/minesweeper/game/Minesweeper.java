@@ -82,6 +82,7 @@ public class Minesweeper extends Application {
 
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
                 Grid grid = sceneRoot.bombGrid;
+                Timer timer = sceneRoot.informationRibbon.timer;
                 grid.setDisable(true);
                 grid.setOnMouseClicked(new EventHandler<MouseEvent> (){
                     @Override
@@ -97,14 +98,14 @@ public class Minesweeper extends Application {
                                     grid.openAdjacent(colX, colY);
                                     if (grid.getOpened() == (grid.n * grid.n - grid.game.getNumberOfBombs())) {
                                         grid.revealAll();
-                                        // timer.getTimeline().stop();
+                                        timer.getTimeline().stop();
                                     }
     
                             } else if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB){
                                 grid.gridCell[colX][colY].setFill(Color.RED);
                                 grid.gridCell[colX][colY].setStatus(Cell.OPENED);
                                 grid.revealAll();
-                                // timer.getTimeline().stop();
+                                timer.getTimeline().stop();
                             }
     
                         } else if (me.getButton() == MouseButton.SECONDARY) {
@@ -132,7 +133,14 @@ public class Minesweeper extends Application {
             public void handle(ActionEvent event) {
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
                 Grid grid = sceneRoot.bombGrid;
-                grid.setDisable(false);
+                Timer timer = sceneRoot.informationRibbon.timer;
+                
+                if (!grid.game.isFinished()) {
+                    timer.button.getOnAction().handle(event);
+                    grid.setDisable(false);
+                } else {
+                    getMenuButton(GameScene.APPLICATION, GameScene.LOAD).getOnAction().handle(event);
+                } 
             }
         });
 
@@ -140,6 +148,27 @@ public class Minesweeper extends Application {
             @Override
             public void handle(ActionEvent event) {
                 mainStage.close();
+            }
+        });
+
+        getMenuButton(GameScene.DETAILS, GameScene.ROUNDS).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainStage.close();
+            }
+        });
+
+        getMenuButton(GameScene.DETAILS, GameScene.SOLUTION).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
+                Grid grid = sceneRoot.bombGrid;
+                Timer timer = sceneRoot.informationRibbon.timer;
+
+                grid.revealAll();
+                if (timer.timeline != null) {
+                    timer.getTimeline().stop();
+                }
             }
         });
 
