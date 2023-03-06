@@ -66,11 +66,19 @@ public class Minesweeper extends Application {
         mainStage.show();
 
         
+        GameCreationPopup gameCreationPopup = new GameCreationPopup();
+        gameCreationPopup.completionButtonBox.button.setOnAction(new EventHandler<ActionEvent>() {
+            
+            @Override
+            public void handle(ActionEvent event) {
+                gameCreationPopup.hide();
+            }
+        });
         
         getMenuButton(GameScene.APPLICATION, GameScene.CREATE).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                
+                gameCreationPopup.show(mainStage);
             }
         });
 
