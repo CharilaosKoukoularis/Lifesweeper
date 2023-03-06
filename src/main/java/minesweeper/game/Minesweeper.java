@@ -56,7 +56,6 @@ public class Minesweeper extends Application {
 
     
     private Stage mainStage;
-    private SceneRoot sceneRoot;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -83,58 +82,57 @@ public class Minesweeper extends Application {
 
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
                 Grid grid = sceneRoot.bombGrid;
-                if (grid != null) {
-                    grid.setDisable(false);
-                    grid.setOnMouseClicked(new EventHandler<MouseEvent> (){
-                        @Override
-                        public void handle(MouseEvent me){
-                            double posX = me.getX();
-                            double posY = me.getY();
-                
-                            int colX = (int)(posX / grid.getCellWidth());
-                            int colY = (int)(posY / grid.getCellWidth());
-                
-                            if (me.getButton() == MouseButton.PRIMARY) {
-                                if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENEMPTY) {
-                                        grid.openAdjacent(colX, colY);
-                                        if (grid.getOpened() == (grid.n * grid.n - grid.game.getNumberOfBombs())) {
-                                            grid.revealAll();
-                                            // timer.getTimeline().stop();
-                                        }
-        
-                                } else if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB){
-                                    grid.gridCell[colX][colY].setFill(Color.RED);
-                                    grid.gridCell[colX][colY].setStatus(Cell.OPENED);
-                                    grid.revealAll();
-                                    // timer.getTimeline().stop();
-                                }
-        
-                            } else if (me.getButton() == MouseButton.SECONDARY) {
-                                if ((grid.gridCell[colX][colY].getFill() == Color.GRAY) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED) && (grid.getMarked() != grid.game.numberOfBombs)) {
-                                    grid.gridCell[colX][colY].setFill(Color.ORANGE);
-                                    grid.increaseMarked(1);
-                                } else if ((grid.gridCell[colX][colY].getFill() == Color.ORANGE) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED)) {
-                                    grid.gridCell[colX][colY].setFill(Color.GRAY);
-                                    grid.increaseMarked(-1);
-                                }
-                            }
-                            // if (grid.getMarked() != grid.game.numberOfBombs) {
-                            //     markedLabel.setStyle("-fx-text-fill: black;");
-                            // } else {
-                            //     markedLabel.setStyle("-fx-text-fill: red;");
-                            // } 
-                            // markedLabel.setText("Marked Cells: " + grid.getMarked().toString());
-                        }
-                    });
-                }
+                grid.setDisable(true);
+                grid.setOnMouseClicked(new EventHandler<MouseEvent> (){
+                    @Override
+                    public void handle(MouseEvent me){
+                        double posX = me.getX();
+                        double posY = me.getY();
             
+                        int colX = (int)(posX / grid.getCellWidth());
+                        int colY = (int)(posY / grid.getCellWidth());
+            
+                        if (me.getButton() == MouseButton.PRIMARY) {
+                            if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENEMPTY) {
+                                    grid.openAdjacent(colX, colY);
+                                    if (grid.getOpened() == (grid.n * grid.n - grid.game.getNumberOfBombs())) {
+                                        grid.revealAll();
+                                        // timer.getTimeline().stop();
+                                    }
+    
+                            } else if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB){
+                                grid.gridCell[colX][colY].setFill(Color.RED);
+                                grid.gridCell[colX][colY].setStatus(Cell.OPENED);
+                                grid.revealAll();
+                                // timer.getTimeline().stop();
+                            }
+    
+                        } else if (me.getButton() == MouseButton.SECONDARY) {
+                            if ((grid.gridCell[colX][colY].getFill() == Color.GRAY) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED) && (grid.getMarked() != grid.game.numberOfBombs)) {
+                                grid.gridCell[colX][colY].setFill(Color.ORANGE);
+                                grid.increaseMarked(1);
+                            } else if ((grid.gridCell[colX][colY].getFill() == Color.ORANGE) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED)) {
+                                grid.gridCell[colX][colY].setFill(Color.GRAY);
+                                grid.increaseMarked(-1);
+                            }
+                        }
+                        // if (grid.getMarked() != grid.game.numberOfBombs) {
+                        //     markedLabel.setStyle("-fx-text-fill: black;");
+                        // } else {
+                        //     markedLabel.setStyle("-fx-text-fill: red;");
+                        // } 
+                        // markedLabel.setText("Marked Cells: " + grid.getMarked().toString());
+                    }
+                });
             }
         });
 
         getMenuButton(GameScene.APPLICATION, GameScene.START).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mainStage.close();
+                SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
+                Grid grid = sceneRoot.bombGrid;
+                grid.setDisable(false);
             }
         });
 
