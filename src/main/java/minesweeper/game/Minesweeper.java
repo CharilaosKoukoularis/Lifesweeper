@@ -57,7 +57,6 @@ public class Minesweeper extends Application {
     
     private Stage mainStage;
     private SceneRoot sceneRoot;
-    private Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -68,8 +67,7 @@ public class Minesweeper extends Application {
         mainStage.show();
 
         
-        sceneRoot = (SceneRoot)mainStage.getScene().getRoot();
-
+        
         getMenuButton(GameScene.APPLICATION, GameScene.CREATE).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
@@ -83,6 +81,7 @@ public class Minesweeper extends Application {
                 mainStage.setScene(new GameScene(new Game(), 640));
                 mainStage.show();
 
+                SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
                 Grid grid = sceneRoot.bombGrid;
                 if (grid != null) {
                     grid.setDisable(false);
@@ -154,8 +153,8 @@ public class Minesweeper extends Application {
     }    
 
     public MenuItem getMenuButton(Integer menuName, Integer itemName) {
-        DropdownMenu applicationMenu = (DropdownMenu)SceneRoot.menuRibbon.getMenus().get(menuName);
-        MenuItem menuButton = applicationMenu.getItems().get(itemName);
+        DropdownMenu dropdownMenu = (DropdownMenu) SceneRoot.menuRibbon.getMenus().get(menuName);
+        MenuItem menuButton = dropdownMenu.getItems().get(itemName);
         return menuButton;
     }
 }
