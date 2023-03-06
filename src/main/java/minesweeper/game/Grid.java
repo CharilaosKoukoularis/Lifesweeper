@@ -13,6 +13,7 @@ public class Grid extends Pane {
     private double cellWidth;
     private Integer opened = 0;    
     private Integer marked = 0;
+    protected Integer markedBombs = 0;
     private IntegerProperty markedCells = new SimpleIntegerProperty();
     public int n;//private
 
@@ -119,11 +120,54 @@ public class Grid extends Pane {
         return markedCells;
     }
 
+    public void diffuseHyperBomb() {
+
+        Integer x = game.hyperBombPosition % n;
+        Integer y = game.hyperBombPosition / n;
+
+        for (int i = 0; i < n; i++) {
+            if (gridCell[x][i].getStatus() != Cell.OPENED) {
+                if (gridCell[x][i].getStatus() == Cell.HIDDENBOMB) {
+
+                    if (gridCell[x][i].getFill() != Color.ORANGE) {
+                        gridCell[x][i].setFill(Color.BLACK);
+                    }
+                } else if (gridCell[x][i].getStatus() == Cell.HIDDENEMPTY) {
+                    
+                    if (gridCell[x][i].getFill() == Color.ORANGE) {
+                        increaseMarked(-1);
+                    }
+                    gridCell[x][i].setFill(null);
+                    opened++;
+                }
+                gridCell[x][i].setStatus(Cell.OPENED);
+                getChildren().add(gridCell[x][i].getHint());
+            }
+            if (gridCell[i][y].getStatus() != Cell.OPENED) {
+                if (gridCell[i][y].getStatus() == Cell.HIDDENBOMB) {
+
+                    if (gridCell[i][y].getFill() != Color.ORANGE) {
+                        gridCell[i][y].setFill(Color.BLACK);
+                    }
+                } else if (gridCell[i][y].getStatus() == Cell.HIDDENEMPTY) {
+                    
+                    if (gridCell[i][y].getFill() == Color.ORANGE) {
+                        increaseMarked(-1);
+                    }
+                    gridCell[i][y].setFill(null);
+                    opened++;
+                }
+                gridCell[i][y].setStatus(Cell.OPENED);
+                getChildren().add(gridCell[i][y].getHint());
+            }
+        }
+    } 
+
     public void openAdjacent(int x, int y) {
         if (x < 0 || y < 0 || x >= n || y >= n) return;
         if (gridCell[x][y].getStatus() == Cell.OPENED) return;
 
-        if (gridCell[x][y].getFill() == Color.ORANGE){
+        if (gridCell[x][y].getFill() == Color.ORANGE) {
             increaseMarked(-1);
         }
 

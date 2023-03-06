@@ -20,7 +20,7 @@ public class Game extends Scenario {
     private Grid grid;
 
     public List<Integer> bombsList; // Make Private
-    private Integer hyperBombPosition;
+    protected Integer hyperBombPosition;
 
     //- Game: Random Constructor -\\
     Game() {
@@ -60,8 +60,9 @@ public class Game extends Scenario {
         StringBuilder builder = new StringBuilder();  
   
         for (Integer bomb : bombsList) {  
-            builder.append(((Integer)(bomb / gridSize[mode])).toString() + " " 
-            + ((Integer)(bomb % gridSize[mode])).toString() + "\n");  
+            builder.append(((Integer)(bomb / gridSize[mode])).toString() + ", " 
+            + ((Integer)(bomb % gridSize[mode])).toString() + ", "
+            + (((hyperBombExistence == 1) && (bomb == hyperBombPosition)) ? "1" : "0") + "\n");
         }
 
         //- Bomb Positions Text File -\\ 
@@ -130,7 +131,8 @@ public class Game extends Scenario {
     
             for (Integer bomb : bombsList) {  
                 builder.append(((Integer)(bomb / gridSize[mode])).toString() + ", " 
-                + ((Integer)(bomb % gridSize[mode])).toString() + "\n");  
+                + ((Integer)(bomb % gridSize[mode])).toString() + ", "
+                + (((hyperBombExistence == 1) && (bomb == hyperBombPosition)) ? "1" : "0") + "\n");
             }
 
             //- Bomb Positions Text File -\\ 

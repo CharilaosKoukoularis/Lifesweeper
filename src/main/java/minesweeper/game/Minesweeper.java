@@ -116,8 +116,15 @@ public class Minesweeper extends Application {
                                 timer.getTimeline().stop();
                             }
     
-                        } else if (me.getButton() == MouseButton.SECONDARY) {
+                        } else if (me.getButton() == MouseButton.SECONDARY) { System.out.println(colX);System.out.println(colY);
                             if ((grid.gridCell[colX][colY].getFill() == Color.GRAY) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED) && (grid.getMarked() != grid.game.numberOfBombs)) {
+                                if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB) {
+                                    if ((grid.markedBombs <= 4) && (colX == grid.game.hyperBombPosition / grid.n) && (colY == grid.game.hyperBombPosition % grid.n)) {
+                                        grid.diffuseHyperBomb();
+                                        System.out.println("Hyperbomb");
+                                    }
+                                    grid.markedBombs++;
+                                }
                                 grid.gridCell[colX][colY].setFill(Color.ORANGE);
                                 grid.increaseMarked(1);
                             } else if ((grid.gridCell[colX][colY].getFill() == Color.ORANGE) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED)) {
@@ -144,7 +151,9 @@ public class Minesweeper extends Application {
                 Timer timer = sceneRoot.informationRibbon.timer;
                 
                 if (!grid.game.isFinished()) {
-                    timer.button.getOnAction().handle(event);
+                    if (timer.remainingTime.intValue() == timer.startingTime) {
+                        timer.button.getOnAction().handle(event);
+                    }
                     grid.setDisable(false);
                 } else {
                     getMenuButton(GameScene.APPLICATION, GameScene.LOAD).getOnAction().handle(event);
