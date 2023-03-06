@@ -54,22 +54,42 @@ import java.util.stream.IntStream;
  */
 public class Minesweeper extends Application {
 
+    private Stage mainStage;
     private Scene scene;
 
     @Override
     public void start(Stage stage) throws IOException {
-        stage.setTitle("Medialab Minesweeper");
-        stage.setScene(createScene(new Game(), 640));
-        stage.setResizable(false);
-        stage.show();
+        mainStage = stage;
+        mainStage.setTitle("Medialab Minesweeper");
+        mainStage.setResizable(false);
+        mainStage.setScene(new GameScene(640));
+        mainStage.show();
+
+        getMenuButton(GameScene.APPLICATION, GameScene.CREATE).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainStage.setScene(new GameScene(new Game(), 640));
+                mainStage.show();
+            }
+        });
+
+        getMenuButton(GameScene.APPLICATION, GameScene.EXIT).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainStage.close();
+            }
+        });
     }
 
     public static void main(String[] args) {
         launch();
-    }
+    }    
 
-    public Scene createScene(Game game, double size) {
-        return new Scene(new SceneRoot(game, size));
+    public MenuItem getMenuButton(Integer menuName, Integer itemName) {
+        SceneRoot sceneRoot  = (SceneRoot)mainStage.getScene().getRoot();
+        DropdownMenu applicationMenu = (DropdownMenu)sceneRoot.menuRibbon.getMenus().get(menuName);
+        MenuItem menuButton = applicationMenu.getItems().get(itemName);
+        return menuButton;
     }
 }
 

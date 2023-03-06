@@ -15,6 +15,10 @@ public class SceneRoot extends BorderPane {
     protected MenuBar menuRibbon = new MenuBar(new DropdownMenu("Application", "Create", "Load", "Start", "Exit"), new DropdownMenu("Details", "Rounds", "Solution"));
     protected Grid bombGrid;
 
+    SceneRoot(double size) {
+        setTop(new HBox(menuRibbon));
+    }
+
     SceneRoot(Game game, double size) {
         bombGrid = new Grid(game, size);
         informationRibbon.setAlignment(Pos.CENTER);
