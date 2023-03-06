@@ -33,7 +33,7 @@ public class GameScene extends Scene {
     }
 
     GameScene(Game game, double size) {
-        super(new SceneRoot(game, size), size, size);
+        super(new SceneRoot(game, size));//, size, size);
     }
 
     public void changeGame(Game game) {

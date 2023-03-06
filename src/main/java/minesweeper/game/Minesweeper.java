@@ -54,7 +54,9 @@ import java.util.stream.IntStream;
  */
 public class Minesweeper extends Application {
 
+    
     private Stage mainStage;
+    private SceneRoot sceneRoot;
     private Scene scene;
 
     @Override
@@ -65,11 +67,75 @@ public class Minesweeper extends Application {
         mainStage.setScene(new GameScene(640));
         mainStage.show();
 
+        
+        sceneRoot = (SceneRoot)mainStage.getScene().getRoot();
+
         getMenuButton(GameScene.APPLICATION, GameScene.CREATE).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                
+            }
+        });
+
+        getMenuButton(GameScene.APPLICATION, GameScene.LOAD).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
                 mainStage.setScene(new GameScene(new Game(), 640));
                 mainStage.show();
+
+                Grid grid = sceneRoot.bombGrid;
+                if (grid != null) {
+                    grid.setDisable(false);
+                    grid.setOnMouseClicked(new EventHandler<MouseEvent> (){
+                        @Override
+                        public void handle(MouseEvent me){
+                            double posX = me.getX();
+                            double posY = me.getY();
+                
+                            int colX = (int)(posX / grid.getCellWidth());
+                            int colY = (int)(posY / grid.getCellWidth());
+                
+                            if (me.getButton() == MouseButton.PRIMARY) {
+                                if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENEMPTY) {
+                                        grid.openAdjacent(colX, colY);
+                                        if (grid.getOpened() == (grid.n * grid.n - grid.game.getNumberOfBombs())) {
+                                            grid.revealAll();
+                                            // timer.getTimeline().stop();
+                                        }
+        
+                                } else if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB){
+                                    grid.gridCell[colX][colY].setFill(Color.RED);
+                                    grid.gridCell[colX][colY].setStatus(Cell.OPENED);
+                                    grid.revealAll();
+                                    // timer.getTimeline().stop();
+                                }
+        
+                            } else if (me.getButton() == MouseButton.SECONDARY) {
+                                if ((grid.gridCell[colX][colY].getFill() == Color.GRAY) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED) && (grid.getMarked() != grid.game.numberOfBombs)) {
+                                    grid.gridCell[colX][colY].setFill(Color.ORANGE);
+                                    grid.increaseMarked(1);
+                                } else if ((grid.gridCell[colX][colY].getFill() == Color.ORANGE) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED)) {
+                                    grid.gridCell[colX][colY].setFill(Color.GRAY);
+                                    grid.increaseMarked(-1);
+                                }
+                            }
+                            // if (grid.getMarked() != grid.game.numberOfBombs) {
+                            //     markedLabel.setStyle("-fx-text-fill: black;");
+                            // } else {
+                            //     markedLabel.setStyle("-fx-text-fill: red;");
+                            // } 
+                            // markedLabel.setText("Marked Cells: " + grid.getMarked().toString());
+                        }
+                    });
+                }
+            
+            }
+        });
+
+        getMenuButton(GameScene.APPLICATION, GameScene.START).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                mainStage.close();
             }
         });
 
@@ -79,6 +145,8 @@ public class Minesweeper extends Application {
                 mainStage.close();
             }
         });
+
+
     }
 
     public static void main(String[] args) {
@@ -86,8 +154,7 @@ public class Minesweeper extends Application {
     }    
 
     public MenuItem getMenuButton(Integer menuName, Integer itemName) {
-        SceneRoot sceneRoot  = (SceneRoot)mainStage.getScene().getRoot();
-        DropdownMenu applicationMenu = (DropdownMenu)sceneRoot.menuRibbon.getMenus().get(menuName);
+        DropdownMenu applicationMenu = (DropdownMenu)SceneRoot.menuRibbon.getMenus().get(menuName);
         MenuItem menuButton = applicationMenu.getItems().get(itemName);
         return menuButton;
     }

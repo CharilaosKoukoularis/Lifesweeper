@@ -49,7 +49,7 @@ public class Grid extends Pane {
                         // gridCell[i][j].setFill(Color.BLACK);
                     }
                 }
-                this.getChildren().add(gridCell[i][j]);  
+                getChildren().add(gridCell[i][j]);  
             }
         }
 
@@ -124,7 +124,7 @@ public class Grid extends Pane {
         if (gridCell[x][y].getStatus() == Cell.OPENED) return;
 
         if (gridCell[x][y].getFill() == Color.ORANGE){
-            this.increaseMarked(-1);
+            increaseMarked(-1);
         }
 
         gridCell[x][y].setFill(null);
@@ -135,7 +135,7 @@ public class Grid extends Pane {
         if (neighborMatrix[x][y] == 0) {
             for (int k = -1; k <= 1; k++) {
                 for (int l = -1; l <= 1; l++) {
-                    this.openAdjacent(x + k, y + l);
+                    openAdjacent(x + k, y + l);
                 }
             }
         }
