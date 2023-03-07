@@ -2,6 +2,7 @@ package minesweeper.game;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class Cell extends Rectangle {
@@ -15,7 +16,7 @@ public class Cell extends Rectangle {
     
     protected int content;
     protected int status = INITIAL;
-    protected int neighbors;
+    protected int neighbors = 0;
     protected boolean hyperMine = false;
     protected Text hint;
 
@@ -24,5 +25,7 @@ public class Cell extends Rectangle {
         setHeight(width);
         setFill(Color.GRAY);
         setStroke(Color.BLACK);
+        hint = new Text(getX() + getWidth() / 2, getY() + getHeight() / 2, "");  
+        hint.fontProperty().set(Font.font(20.0));    
     }
 }

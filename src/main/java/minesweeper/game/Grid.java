@@ -1,7 +1,5 @@
 package minesweeper.game;
 
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -14,7 +12,6 @@ public class Grid extends Pane {
     protected Integer cellsOpened = 0;    
     protected Integer cellsMarked = 0;
     protected Integer markedMines = 0;
-    protected IntegerProperty markedCells = new SimpleIntegerProperty();
     protected double width;//private
     protected int size;//private
 
@@ -32,7 +29,7 @@ public class Grid extends Pane {
         size = Game.gridSize[game.scenario.difficulty - 1];
         cell = new Cell [size][size];
         cellWidth = width / size;
-        // Pane pane = new Pane();
+
         int mineCounter = 0;
 
         for (int j = 0; j < size; j++) {
@@ -46,12 +43,13 @@ public class Grid extends Pane {
                     if ((j * size + i) == game.minesList.get(mineCounter)) {
                         cell[i][j].content = Cell.MINE;
                         mineCounter++;
-                        // cell[i][j].setFill(Color.BLACK);
+                        cell[i][j].setFill(Color.BLACK);
                     }
                 }
                 getChildren().add(cell[i][j]);  
             }
         }
+        cell[game.hyperMinePosition % size][game.hyperMinePosition / size].hyperMine = true;
 
         int [][] temporaryMatrix = new int [size + 2][size + 2];
         for (int i = 0; i < size + 2; i++) {
@@ -76,35 +74,21 @@ public class Grid extends Pane {
                     }
                 }
                 Text hint;
-                if (neighborMatrix[i][j] == 0) {
-                    hint = new Text();//Text(cell[i][j].getX() + cell[i][j].getWidth() / 2, cell[i][j].getY() + cell[i][j].getHeight() / 2, "0");
-                } else {
-                    hint = new Text(cell[i][j].getX() + cell[i][j].getWidth() / 2, cell[i][j].getY() + cell[i][j].getHeight() / 2, neighborMatrix[i][j].toString());
+                if (neighborMatrix[i][j] != 0) {
+                    cell[i][j].hint.setText(neighborMatrix[i][j].toString());
                     if (neighborMatrix[i][j] == 1) {
-                        hint.fillProperty().set(Color.BLUE);
+                        cell[i][j].hint.fillProperty().set(Color.BLUE);
                     } else if (neighborMatrix[i][j] == 2) {
-                        hint.fillProperty().set(Color.GREEN);
+                        cell[i][j].hint.fillProperty().set(Color.GREEN);
                     } else if (neighborMatrix[i][j] == 3) {
-                        hint.fillProperty().set(Color.PURPLE);
+                        cell[i][j].hint.fillProperty().set(Color.PURPLE);
                     } else if (neighborMatrix[i][j] >= 4) {
-                        hint.fillProperty().set(Color.RED);
+                        cell[i][j].hint.fillProperty().set(Color.RED);
                     }
                 }
-                hint.fontProperty().set(Font.font(20.0));
-                cell[i][j].hint = hint;
-                // this.getChildren().add(hint);
+                cell[i][j].hint.fontProperty().set(Font.font(20.0));
             }
         }
-    }
-
-    // public void notifyNeighbors() {
-
-    // }
-
-    public void increaseMarked(int increment) {
-        cellsMarked = cellsMarked + increment;
-        markedCells = new SimpleIntegerProperty(cellsMarked);
-        markedCells.set(cellsMarked);
     }
 
     public void diffuseHyperMine() {
@@ -122,13 +106,15 @@ public class Grid extends Pane {
                 } else if (cell[x][i].content == Cell.EMPTY) {
                     
                     if (cell[x][i].getFill() == Color.ORANGE) {
-                        increaseMarked(-1);
+                        cellsMarked--;
                     }
                     cell[x][i].setFill(null);
                     cellsOpened++;
                 }
                 cell[x][i].status = Cell.OPENED;
-                getChildren().add(cell[x][i].hint);
+                if (cell[x][i].content == Cell.EMPTY) {
+                    getChildren().add(cell[x][i].hint);
+                }
             }
             if (cell[i][y].status != Cell.OPENED) {
                 if (cell[i][y].content == Cell.MINE) {
@@ -139,13 +125,16 @@ public class Grid extends Pane {
                 } else if (cell[i][y].content == Cell.EMPTY) {
                     
                     if (cell[i][y].getFill() == Color.ORANGE) {
-                        increaseMarked(-1);
+                        cellsMarked--;
                     }
                     cell[i][y].setFill(null);
                     cellsOpened++;
                 }
-                cell[i][y].status = Cell.OPENED;
-                getChildren().add(cell[i][y].hint);
+                cell[i][y].status = Cell.OPENED;if
+                 (cell[i][y].content == Cell.EMPTY) {
+                    getChildren().add(cell[i][y].hint);
+                }
+                
             }
         }
     } 
@@ -155,7 +144,7 @@ public class Grid extends Pane {
         if (cell[x][y].status == Cell.OPENED) return;
 
         if (cell[x][y].getFill() == Color.ORANGE) {
-            increaseMarked(-1);
+            cellsMarked--;
         }
 
         cell[x][y].setFill(null);

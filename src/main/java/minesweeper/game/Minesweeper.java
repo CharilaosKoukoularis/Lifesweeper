@@ -1,21 +1,20 @@
 package minesweeper.game;
 
+import java.io.File;
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.io.IOException;
-
-
-/**
- * JavaFX App
- */
 public class Minesweeper extends Application {
 
     
@@ -26,8 +25,10 @@ public class Minesweeper extends Application {
         mainStage = stage;
         mainStage.setTitle("Medialab Minesweeper");
         mainStage.setResizable(false);
-        mainStage.setScene(new GameScene(new Game(), 640));
+        mainStage.setScene(new GameScene(640));
         mainStage.show();
+
+        // new GameLoadPopup().show(mainStage);;
 
         
         GameCreationPopup gameCreationPopup = new GameCreationPopup();
@@ -49,8 +50,20 @@ public class Minesweeper extends Application {
         getMenuButton(GameScene.APPLICATION, GameScene.LOAD).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+
+                GameLoadPopup gameLoadPopup = new GameLoadPopup();
+                // gameLoadPopup.show(mainStage);
+                // gameLoadPopup.getContent().get(0).setOnMouseClicked(new EventHandler<Event>() {
+                //     @Override
+                //     public void handle(Event event) {
+                //         mainStage.setScene(new GameScene(new Game(new File("SCENARIO-ID.txt")), 640));
+                //         mainStage.show();
+                //     }
+                // });
+
                 mainStage.setScene(new GameScene(new Game(), 640));//new File("SCENARIO-ID.txt")
                 mainStage.show();
+                
 
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
                 Grid grid = sceneRoot.mineGrid;
@@ -73,7 +86,7 @@ public class Minesweeper extends Application {
                                         timer.getTimeline().stop();
                                     }
     
-                            } else if (grid.cell[colX][colY].content == Cell.MINE) {
+                            } else if (grid.cell[colX][colY].content == Cell.MINE && grid.cell[colX][colY].status != Cell.OPENED) {
                                 grid.cell[colX][colY].setFill(Color.RED);
                                 grid.cell[colX][colY].status = Cell.OPENED;
                                 grid.revealAll();
@@ -81,27 +94,29 @@ public class Minesweeper extends Application {
                             }
     
                         } else if (me.getButton() == MouseButton.SECONDARY) { System.out.println(colX);System.out.println(colY);
-                            if ((grid.cell[colX][colY].getFill() == Color.GRAY) && (grid.cell[colX][colY].status != Cell.OPENED) && (grid.cellsMarked != grid.game.scenario.numberOfMines)) {
+                            if ((grid.cell[colX][colY].getFill() != Color.ORANGE) && (grid.cell[colX][colY].status != Cell.OPENED) && (grid.cellsMarked != grid.game.scenario.numberOfMines)) {
                                 if (grid.cell[colX][colY].content == Cell.MINE) {
-                                    if ((grid.markedMines <= 4) && (colX == grid.game.hyperMinePosition / grid.size) && (colY == grid.game.hyperMinePosition % grid.size)) {
+                                    if ((grid.markedMines <= 4) && grid.cell[colX][colY].hyperMine) {
                                         grid.diffuseHyperMine();
                                         System.out.println("Hypermine");
                                     }
                                     grid.markedMines++;
                                 }
                                 grid.cell[colX][colY].setFill(Color.ORANGE);
-                                grid.increaseMarked(1);
+                                grid.cellsMarked++;
                             } else if ((grid.cell[colX][colY].getFill() == Color.ORANGE) && (grid.cell[colX][colY].status != Cell.OPENED)) {
                                 grid.cell[colX][colY].setFill(Color.GRAY);
-                                grid.increaseMarked(-1);
+                                grid.cellsMarked--;
                             }
                         }
-                        // if (grid.getMarked() != grid.game.numberOfMines) {
-                        //     markedLabel.setStyle("-fx-text-fill: black;");
-                        // } else {
-                        //     markedLabel.setStyle("-fx-text-fill: red;");
-                        // } 
-                        // markedLabel.setText("Marked Cells: " + grid.getMarked().toString());
+                        Label markedLabel = (Label) sceneRoot.informationRibbon.getChildren().get(2);
+
+                        if (grid.cellsMarked != grid.game.scenario.numberOfMines) {
+                            markedLabel.setStyle("-fx-text-fill: black;");
+                        } else {
+                            markedLabel.setStyle("-fx-text-fill: red;");
+                        } 
+                        markedLabel.setText("Marked Cells: " + grid.cellsMarked.toString());
                     }
                 });
             }
