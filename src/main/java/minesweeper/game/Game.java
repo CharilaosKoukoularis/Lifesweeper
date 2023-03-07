@@ -10,46 +10,42 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class Game extends Scenario {
-    private final static int [] gridSize = {9, 16};
+public class Game {
 
-    private boolean finished = false;
+    protected final static int [] gridSize = {9, 16};
 
-    private File gameId;
-    private Scenario scenario;
-    private Grid grid;
+    protected boolean finished = false;
 
-    public List<Integer> bombsList; // Make Private
-    protected Integer hyperBombPosition;
+    protected Scenario scenario;
 
-    //- Game: Random Constructor -\\
+    protected List<Integer> minesList;
+    protected Integer hyperMinePosition;
+
+
     Game() {
 
         scenario = new Scenario();
 
-        mode = scenario.mode;
-        numberOfBombs = scenario.numberOfBombs;
-        timeLimit = scenario.timeLimit;
-        hyperBombExistence = scenario.hyperBombExistence;
+        int mode = scenario.difficulty - 1;
 
         //- Number Of Tiles -\\
         final int numberOfTiles = gridSize[mode] * gridSize[mode];
 
-        //- Random Bomb Locations -\\
+        //- Random Mine Locations -\\
         List<Integer> range = IntStream.range(0, numberOfTiles).boxed().collect(Collectors.toCollection(ArrayList::new));
         Collections.shuffle(range);
-        bombsList = range.subList(0, numberOfBombs);
-        Collections.sort(bombsList);
-        hyperBombPosition = bombsList.get(new Random().nextInt(numberOfBombs));
+        minesList = range.subList(0, scenario.numberOfMines);
+        Collections.sort(minesList);
+        hyperMinePosition = minesList.get(new Random().nextInt(scenario.numberOfMines));
 
         //- Scenario-ID Text File -\\ 
         try {
             FileWriter myWriter = new FileWriter("SCENARIO-ID.txt");
-            myWriter.write(scenario.getDifficulty().toString() + "\n" 
-                    + numberOfBombs.toString() + "\n"
-                    + timeLimit.toString() + "\n"
-                    + hyperBombExistence.toString() + "\n");
-            myWriter.write(bombsList.toString());
+            myWriter.write(scenario.difficulty.toString() + "\n" 
+                    + scenario.numberOfMines.toString() + "\n"
+                    + scenario.timeLimit.toString() + "\n"
+                    + scenario.hyperMineExistence.toString() + "\n");
+            myWriter.write(minesList.toString());
             myWriter.close();
             System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
@@ -59,13 +55,13 @@ public class Game extends Scenario {
 
         StringBuilder builder = new StringBuilder();  
   
-        for (Integer bomb : bombsList) {  
-            builder.append(((Integer)(bomb / gridSize[mode])).toString() + ", " 
-            + ((Integer)(bomb % gridSize[mode])).toString() + ", "
-            + (((hyperBombExistence == 1) && (bomb == hyperBombPosition)) ? "1" : "0") + "\n");
+        for (Integer mine : minesList) {  
+            builder.append(((Integer)(mine / gridSize[mode])).toString() + ", " 
+            + ((Integer)(mine % gridSize[mode])).toString() + ", "
+            + (((scenario.hyperMineExistence == 1) && (mine == hyperMinePosition)) ? "1" : "0") + "\n");
         }
 
-        //- Bomb Positions Text File -\\ 
+        //- Mine Positions Text File -\\ 
         try {
             FileWriter myWriter = new FileWriter("mines.txt");
             myWriter.write(builder.toString());
@@ -81,10 +77,10 @@ public class Game extends Scenario {
         Scenario savedScenario;
         try {
             savedScenario = new Scenario(scenarioFile);
-            System.out.println(savedScenario.getDifficulty());
-            System.out.println(savedScenario.getNumberOfBombs());
-            System.out.println(savedScenario.getTimeLimit());
-            System.out.println(savedScenario.hasHyperBomb());
+            System.out.println(savedScenario.difficulty);
+            System.out.println(savedScenario.numberOfMines);
+            System.out.println(savedScenario.timeLimit);
+            System.out.println(savedScenario.hyperMineExistence);
         } catch (InvalidScenarioException e) {
             System.out.println("An error occured.");
             e.printStackTrace();
@@ -92,34 +88,33 @@ public class Game extends Scenario {
         
     }
 
+
     Game(File scenarioFile) {
 
         try {
             scenario = new Scenario(scenarioFile);
-        
-            mode = scenario.mode;
-            numberOfBombs = scenario.numberOfBombs;
-            timeLimit = scenario.timeLimit;
-            hyperBombExistence = scenario.hyperBombExistence;
+            int mode = scenario.difficulty - 1;
 
             //- Number Of Tiles -\\
             final int numberOfTiles = gridSize[mode] * gridSize[mode];
 
-            //- Random Bomb Locations -\\
+            //- Random Mine Locations -\\
             List<Integer> range = IntStream.range(0, numberOfTiles).boxed().collect(Collectors.toCollection(ArrayList::new));
             Collections.shuffle(range);
-            bombsList = range.subList(0, numberOfBombs);
-            Collections.sort(bombsList);
-            hyperBombPosition = bombsList.get(new Random().nextInt(numberOfBombs));
+            minesList = range.subList(0, scenario.numberOfMines);
+            Collections.sort(minesList);
+
+            //- Random HyperMine Location -\\
+            hyperMinePosition = minesList.get(new Random().nextInt(scenario.numberOfMines));
 
             //- Scenario-ID Text File -\\ 
             try {
                 FileWriter myWriter = new FileWriter("SCENARIO-ID.txt");
-                myWriter.write(scenario.getDifficulty().toString() + "\n" 
-                        + numberOfBombs.toString() + "\n"
-                        + timeLimit.toString() + "\n"
-                        + hyperBombExistence.toString() + "\n");
-                myWriter.write(bombsList.toString());
+                myWriter.write(scenario.difficulty.toString() + "\n" 
+                        + scenario.numberOfMines.toString() + "\n"
+                        + scenario.timeLimit.toString() + "\n"
+                        + scenario.hyperMineExistence.toString() + "\n");
+                myWriter.write(minesList.toString());
                 myWriter.close();
                 System.out.println("Successfully wrote to the file.");
             } catch (IOException e) {
@@ -129,17 +124,18 @@ public class Game extends Scenario {
 
             StringBuilder builder = new StringBuilder();  
     
-            for (Integer bomb : bombsList) {  
-                builder.append(((Integer)(bomb / gridSize[mode])).toString() + ", " 
-                + ((Integer)(bomb % gridSize[mode])).toString() + ", "
-                + (((hyperBombExistence == 1) && (bomb == hyperBombPosition)) ? "1" : "0") + "\n");
+            for (Integer mine : minesList) {  
+                builder.append(((Integer)(mine / gridSize[mode])).toString() + ", " 
+                + ((Integer)(mine % gridSize[mode])).toString() + ", "
+                + (((scenario.hyperMineExistence == 1) && (mine == hyperMinePosition)) ? "1" : "0") + "\n");
             }
 
-            //- Bomb Positions Text File -\\ 
+            //- Mine Positions Text File -\\ 
             try {
                 FileWriter myWriter = new FileWriter("mines.txt");
                 myWriter.write(builder.toString());
                 myWriter.close();
+
                 System.out.println("Successfully wrote to the file.");
             } catch (IOException e) {
                 System.out.println("An error occurred.");
@@ -151,34 +147,21 @@ public class Game extends Scenario {
         }
     }
 
-    //- Game: Grid Scale -\\
-    public Integer getGridSize() {
-        return gridSize[mode];
-    }
-
-    public void finish(boolean answer) {
-        finished = answer;
-    }
-
-    public boolean isFinished() {
-        return finished;
-    }
-
-    //- Game: Save Current Scenario -\\
-    public void saveScenario(String filename) {
-        try {
-            FileWriter myWriter = new FileWriter(filename);
-            myWriter.write(scenario.getDifficulty().toString() + "\n" 
-                    + numberOfBombs.toString() + "\n"
-                    + timeLimit.toString() + "\n"
-                    + hyperBombExistence.toString() + "\n");
-            myWriter.write(bombsList.toString());
-            myWriter.close();
-            System.out.println("Successfully wrote to the file.");
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
-        }
-    }
+    // //- Game: Save Current Scenario -\\
+    // public void saveScenario(String filename) {
+    //     try {
+    //         FileWriter myWriter = new FileWriter(filename);
+    //         myWriter.write(scenario.getDifficulty().toString() + "\n" 
+    //                 + numberOfMines.toString() + "\n"
+    //                 + timeLimit.toString() + "\n"
+    //                 + hyperMineExistence.toString() + "\n");
+    //         myWriter.write(minesList.toString());
+    //         myWriter.close();
+    //         System.out.println("Successfully wrote to the file.");
+    //     } catch (IOException e) {
+    //         System.out.println("An error occurred.");
+    //         e.printStackTrace();
+    //     }
+    // }
     
 }

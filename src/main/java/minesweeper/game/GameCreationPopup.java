@@ -15,9 +15,9 @@ import javafx.stage.Popup;
 public class GameCreationPopup extends Popup {
 
     protected DifficultySelectionBox difficultySelectionBox = new DifficultySelectionBox();//5, difficultyLabel, difficultyButtonsBox);
-    protected final SelectionBox numberOfBombsSelectionBox = new SelectionBox("Number Of Bombs", new TextField(), "Value out of bounds", "Difficulty 1: 9-11\nDifficulty 2: 35-45", "9 - 11 or 35 - 45");
+    protected final SelectionBox numberOfMinesSelectionBox = new SelectionBox("Number Of Mines", new TextField(), "Value out of bounds", "Difficulty 1: 9-11\nDifficulty 2: 35-45", "9 - 11 or 35 - 45");
     protected final SelectionBox timeLimitSelectionBox = new SelectionBox("Time Limit (seconds)", new TextField(), "Value out of bounds", "Difficulty 1: 120-180\nDifficulty 2: 240-360", "120 - 180 or 240 - 360");
-    protected SelectionBox hyperBombSelectionBox = new SelectionBox("HyperBomb Enable", new RadioButton(), "HyperBomb Unavailable", "Difficulty 1: Unavailable\nDifficulty 2: Available");
+    protected SelectionBox hyperMineSelectionBox = new SelectionBox("HyperMine Enable", new RadioButton(), "HyperMine Unavailable", "Difficulty 1: Unavailable\nDifficulty 2: Available");
     protected SelectionBox completionButtonBox = new SelectionBox(new Button("Complete"));
     
     GameCreationPopup() {
@@ -31,7 +31,7 @@ public class GameCreationPopup extends Popup {
         popupPane.setVgap(10);
         popupPane.setHgap(10);
 
-        // numberOfBombsSelectionBox.textField.setTooltip(new Tooltip("Difficulty 1: 9-11\nDifficulty 2: 35-45"));
+        // numberOfMinesSelectionBox.textField.setTooltip(new Tooltip("Difficulty 1: 9-11\nDifficulty 2: 35-45"));
     
         // completionButton.setOnAction(new EventHandler<ActionEvent>() {
         //     @Override
@@ -42,18 +42,18 @@ public class GameCreationPopup extends Popup {
         //             if (difficultyButton2.isSelected()) {
         //                 difficulty = "2";
         //             } 
-        //             String hyperBomb = "0";
-        //             if (hyperBombEnableButton.isSelected()) {
-        //                 hyperBomb = "1";
+        //             String hyperMine = "0";
+        //             if (hyperMineEnableButton.isSelected()) {
+        //                 hyperMine = "1";
         //             } 
         //             myWriter.write(difficulty + "\n" 
-        //                     + numberOfBombsField.getText() + "\n"
+        //                     + numberOfMinesField.getText() + "\n"
         //                     + timeLimitField.getText() + "\n"
-        //                     + hyperBomb + "\n");
+        //                     + hyperMine + "\n");
         //             myWriter.close();
         //             difficultyButton1.setSelected(false);
         //             difficultyButton2.setSelected(false);
-        //             numberOfBombsField.setText(null);
+        //             numberOfMinesField.setText(null);
                     
         //             System.out.println("Successfully wrote to the file.");
         //         } catch (IOException e) {
@@ -65,15 +65,15 @@ public class GameCreationPopup extends Popup {
         // });
     
         popupPane.setBackground(new Background(new BackgroundFill(Color.WHITE, new CornerRadii(3), null)));
-        // popupPane.getChildren().addAll(difficultyLabel, difficultyButtonsBox, numberOfBombsLabel, numberOfBombsField, timeLimitLabel, timeLimitField, hyperBombEnableLabel, hyperBombEnableButton);
-        // popupPane.getChildren().addAll(difficultySelectionBox, difficultyError, numberOfBombsSelectionBox, numberOfBombsError, timeLimitSelectionBox, timeLimitError, hyperBombSelectionBox, hyperBombError, completionButtonBox);
-        popupPane.getChildren().addAll(difficultySelectionBox,  numberOfBombsSelectionBox, timeLimitSelectionBox, hyperBombSelectionBox, completionButtonBox);
+        // popupPane.getChildren().addAll(difficultyLabel, difficultyButtonsBox, numberOfMinesLabel, numberOfMinesField, timeLimitLabel, timeLimitField, hyperMineEnableLabel, hyperMineEnableButton);
+        // popupPane.getChildren().addAll(difficultySelectionBox, difficultyError, numberOfMinesSelectionBox, numberOfMinesError, timeLimitSelectionBox, timeLimitError, hyperMineSelectionBox, hyperMineError, completionButtonBox);
+        popupPane.getChildren().addAll(difficultySelectionBox,  numberOfMinesSelectionBox, timeLimitSelectionBox, hyperMineSelectionBox, completionButtonBox);
         // popupPane.setFocusTraversable(true);
 
         GridPane.setConstraints(difficultySelectionBox, 0, 0);
-        GridPane.setConstraints(numberOfBombsSelectionBox, 0, 1);
+        GridPane.setConstraints(numberOfMinesSelectionBox, 0, 1);
         GridPane.setConstraints(timeLimitSelectionBox, 0, 2);
-        GridPane.setConstraints(hyperBombSelectionBox, 0, 3);
+        GridPane.setConstraints(hyperMineSelectionBox, 0, 3);
         GridPane.setConstraints(completionButtonBox, 0, 4);
         
         getContent().add(popupPane);

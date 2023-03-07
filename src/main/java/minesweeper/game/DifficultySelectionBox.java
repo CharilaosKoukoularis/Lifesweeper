@@ -17,8 +17,8 @@ public class DifficultySelectionBox extends VBox {
     
     DifficultySelectionBox() {
         difficultyError.setStyle("-fx-text-fill: red;");
-        difficultyButton1.setTooltip(new Tooltip("Bombs: 9-11\nTime: 120-180 s\nHyperBomb: Unavailable"));
-        difficultyButton2.setTooltip(new Tooltip("Bombs: 35-45\nTime: 240-360 s\nHyperBomb: Available"));
+        difficultyButton1.setTooltip(new Tooltip("Mines: 9-11\nTime: 120-180 s\nHyperMine: Unavailable"));
+        difficultyButton2.setTooltip(new Tooltip("Mines: 35-45\nTime: 240-360 s\nHyperMine: Available"));
         difficultyButtonsBox.setSpacing(25);
         difficultyButtonsBox.getChildren().addAll(difficultyButton1, difficultyButton2);
         difficultyButtonsBox.setPadding(new Insets(0, 0, 0, 5));

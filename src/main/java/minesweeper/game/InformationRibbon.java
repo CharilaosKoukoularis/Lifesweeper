@@ -11,8 +11,12 @@ public class InformationRibbon extends HBox {
     protected Timer timer;
 
     InformationRibbon(Grid grid) {
-        super(new Label("Hidden Bombs: " + grid.game.numberOfBombs.toString()), new Separator(Orientation.VERTICAL), new Label("Marked Cells: " + grid.getMarked().toString()), new Separator(Orientation.VERTICAL)); 
-        timer = new Timer(grid.game.timeLimit);
+        super(new Label("Hidden Mines: " + grid.game.scenario.numberOfMines.toString()),
+                new Separator(Orientation.VERTICAL),
+                new Label("Marked Cells: " + grid.cellsMarked.toString()),
+                new Separator(Orientation.VERTICAL)); 
+                
+        timer = new Timer(grid.game.scenario.timeLimit);
         HBox hBox = new HBox(new Label("Remaining Time: "), timer.label, new Label(" s"));
         hBox.setAlignment(Pos.CENTER);
         setSpacing(5);

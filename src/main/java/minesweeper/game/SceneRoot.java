@@ -1,32 +1,27 @@
 package minesweeper.game;
 
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
-import javafx.scene.control.Separator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.TilePane;
-import javafx.scene.text.Text;
 
 public class SceneRoot extends BorderPane {
    
     protected static MenuBar menuRibbon = new MenuBar(new DropdownMenu("Application", "Create", "Load", "Start", "Exit"), new DropdownMenu("Details", "Rounds", "Solution"));
     
-    // protected TilePane informationRibbon = new TilePane(new Label("Hidden Bombs: 45"), new Separator(Orientation.VERTICAL), new Text("Marked Cells: 45"), new Separator(Orientation.VERTICAL), new Text("Time Left: 360 s"));
+    // protected TilePane informationRibbon = new TilePane(new Label("Hidden Mines: 45"), new Separator(Orientation.VERTICAL), new Text("Marked Cells: 45"), new Separator(Orientation.VERTICAL), new Text("Time Left: 360 s"));
     protected InformationRibbon informationRibbon;
-    protected Grid bombGrid;
+    protected Grid mineGrid;
 
     SceneRoot(double size) {
         setTop(new HBox(menuRibbon));
     }
 
     SceneRoot(Game game, double size) {
-        bombGrid = new Grid(game, size);
-        informationRibbon = new InformationRibbon(bombGrid);
+        mineGrid = new Grid(game, size);
+        informationRibbon = new InformationRibbon(mineGrid);
         informationRibbon.setAlignment(Pos.CENTER);
         setTop(new HBox(menuRibbon, informationRibbon));
-        setCenter(bombGrid);
+        setCenter(mineGrid);
     }
 }

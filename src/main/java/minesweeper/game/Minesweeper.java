@@ -1,52 +1,16 @@
 package minesweeper.game;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.application.Application;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.Separator;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.ToolBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 
 /**
@@ -62,7 +26,7 @@ public class Minesweeper extends Application {
         mainStage = stage;
         mainStage.setTitle("Medialab Minesweeper");
         mainStage.setResizable(false);
-        mainStage.setScene(new GameScene(640));
+        mainStage.setScene(new GameScene(new Game(), 640));
         mainStage.show();
 
         
@@ -85,11 +49,11 @@ public class Minesweeper extends Application {
         getMenuButton(GameScene.APPLICATION, GameScene.LOAD).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mainStage.setScene(new GameScene(new Game(), 640));
+                mainStage.setScene(new GameScene(new Game(), 640));//new File("SCENARIO-ID.txt")
                 mainStage.show();
 
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
-                Grid grid = sceneRoot.bombGrid;
+                Grid grid = sceneRoot.mineGrid;
                 Timer timer = sceneRoot.informationRibbon.timer;
                 grid.setDisable(true);
                 grid.setOnMouseClicked(new EventHandler<MouseEvent> (){
@@ -98,41 +62,41 @@ public class Minesweeper extends Application {
                         double posX = me.getX();
                         double posY = me.getY();
             
-                        int colX = (int)(posX / grid.getCellWidth());
-                        int colY = (int)(posY / grid.getCellWidth());
+                        int colX = (int)(posX / grid.cellWidth);
+                        int colY = (int)(posY / grid.cellWidth);
             
                         if (me.getButton() == MouseButton.PRIMARY) {
-                            if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENEMPTY) {
+                            if (grid.cell[colX][colY].content == Cell.EMPTY) {
                                     grid.openAdjacent(colX, colY);
-                                    if (grid.getOpened() == (grid.n * grid.n - grid.game.getNumberOfBombs())) {
+                                    if (grid.cellsOpened == (grid.size * grid.size - grid.game.scenario.numberOfMines)) {
                                         grid.revealAll();
                                         timer.getTimeline().stop();
                                     }
     
-                            } else if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB){
-                                grid.gridCell[colX][colY].setFill(Color.RED);
-                                grid.gridCell[colX][colY].setStatus(Cell.OPENED);
+                            } else if (grid.cell[colX][colY].content == Cell.MINE) {
+                                grid.cell[colX][colY].setFill(Color.RED);
+                                grid.cell[colX][colY].status = Cell.OPENED;
                                 grid.revealAll();
                                 timer.getTimeline().stop();
                             }
     
                         } else if (me.getButton() == MouseButton.SECONDARY) { System.out.println(colX);System.out.println(colY);
-                            if ((grid.gridCell[colX][colY].getFill() == Color.GRAY) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED) && (grid.getMarked() != grid.game.numberOfBombs)) {
-                                if (grid.gridCell[colX][colY].getStatus() == Cell.HIDDENBOMB) {
-                                    if ((grid.markedBombs <= 4) && (colX == grid.game.hyperBombPosition / grid.n) && (colY == grid.game.hyperBombPosition % grid.n)) {
-                                        grid.diffuseHyperBomb();
-                                        System.out.println("Hyperbomb");
+                            if ((grid.cell[colX][colY].getFill() == Color.GRAY) && (grid.cell[colX][colY].status != Cell.OPENED) && (grid.cellsMarked != grid.game.scenario.numberOfMines)) {
+                                if (grid.cell[colX][colY].content == Cell.MINE) {
+                                    if ((grid.markedMines <= 4) && (colX == grid.game.hyperMinePosition / grid.size) && (colY == grid.game.hyperMinePosition % grid.size)) {
+                                        grid.diffuseHyperMine();
+                                        System.out.println("Hypermine");
                                     }
-                                    grid.markedBombs++;
+                                    grid.markedMines++;
                                 }
-                                grid.gridCell[colX][colY].setFill(Color.ORANGE);
+                                grid.cell[colX][colY].setFill(Color.ORANGE);
                                 grid.increaseMarked(1);
-                            } else if ((grid.gridCell[colX][colY].getFill() == Color.ORANGE) && (grid.gridCell[colX][colY].getStatus() != Cell.OPENED)) {
-                                grid.gridCell[colX][colY].setFill(Color.GRAY);
+                            } else if ((grid.cell[colX][colY].getFill() == Color.ORANGE) && (grid.cell[colX][colY].status != Cell.OPENED)) {
+                                grid.cell[colX][colY].setFill(Color.GRAY);
                                 grid.increaseMarked(-1);
                             }
                         }
-                        // if (grid.getMarked() != grid.game.numberOfBombs) {
+                        // if (grid.getMarked() != grid.game.numberOfMines) {
                         //     markedLabel.setStyle("-fx-text-fill: black;");
                         // } else {
                         //     markedLabel.setStyle("-fx-text-fill: red;");
@@ -147,10 +111,10 @@ public class Minesweeper extends Application {
             @Override
             public void handle(ActionEvent event) {
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
-                Grid grid = sceneRoot.bombGrid;
+                Grid grid = sceneRoot.mineGrid;
                 Timer timer = sceneRoot.informationRibbon.timer;
                 
-                if (!grid.game.isFinished()) {
+                if (!grid.game.finished) {
                     if (timer.remainingTime.intValue() == timer.startingTime) {
                         timer.button.getOnAction().handle(event);
                     }
@@ -179,7 +143,7 @@ public class Minesweeper extends Application {
             @Override
             public void handle(ActionEvent event) {
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
-                Grid grid = sceneRoot.bombGrid;
+                Grid grid = sceneRoot.mineGrid;
                 Timer timer = sceneRoot.informationRibbon.timer;
 
                 grid.revealAll();
