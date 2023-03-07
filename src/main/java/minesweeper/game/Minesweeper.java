@@ -97,7 +97,7 @@ public class Minesweeper extends Application {
                             if ((grid.cell[colX][colY].getFill() != Color.ORANGE) && (grid.cell[colX][colY].status != Cell.OPENED) && (grid.cellsMarked != grid.game.scenario.numberOfMines)) {
                                 if (grid.cell[colX][colY].content == Cell.MINE) {
                                     if ((grid.markedMines <= 4) && grid.cell[colX][colY].hyperMine) {
-                                        grid.diffuseHyperMine();
+                                        grid.defuseHyperMine();
                                         System.out.println("Hypermine");
                                     }
                                     grid.markedMines++;
