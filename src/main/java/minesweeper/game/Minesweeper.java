@@ -1,34 +1,45 @@
 package minesweeper.game;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class Minesweeper extends Application {
 
-    
     private Stage mainStage;
+    private GameScene gameScene = new GameScene(640);
+    private RoundsPopup roundsPopup;
+
+    private ArrayList<RecentGame> recentGamesList = new ArrayList<RecentGame>();
 
     @Override
     public void start(Stage stage) throws IOException {
         mainStage = stage;
         mainStage.setTitle("Medialab Minesweeper");
         mainStage.setResizable(false);
-        mainStage.setScene(new GameScene(640));
+        mainStage.setScene(gameScene);
         mainStage.show();
 
-        // new GameLoadPopup().show(mainStage);;
+        // new GameLoadPopup().show(mainStage);
 
         
         GameCreationPopup gameCreationPopup = new GameCreationPopup();
@@ -60,8 +71,9 @@ public class Minesweeper extends Application {
                 //         mainStage.show();
                 //     }
                 // });
-
+                gameScene.changeGame(new Game());
                 mainStage.setScene(new GameScene(new Game(), 640));//new File("SCENARIO-ID.txt")
+                // mainStage.setScene(gameScene);
                 mainStage.show();
                 
 
@@ -69,9 +81,9 @@ public class Minesweeper extends Application {
                 Grid grid = sceneRoot.mineGrid;
                 Timer timer = sceneRoot.informationRibbon.timer;
                 grid.setDisable(true);
-                grid.setOnMouseClicked(new EventHandler<MouseEvent> (){
+                grid.setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
-                    public void handle(MouseEvent me){
+                    public void handle(MouseEvent me) {
                         double posX = me.getX();
                         double posY = me.getY();
             
@@ -82,14 +94,14 @@ public class Minesweeper extends Application {
                             if (grid.cell[colX][colY].content == Cell.EMPTY) {
                                     grid.openAdjacent(colX, colY);
                                     if (grid.cellsOpened == (grid.size * grid.size - grid.game.scenario.numberOfMines)) {
-                                        grid.revealAll();
+                                        grid.revealAll(Game.FINISHED_WIN);
                                         timer.getTimeline().stop();
                                     }
     
                             } else if (grid.cell[colX][colY].content == Cell.MINE && grid.cell[colX][colY].status != Cell.OPENED) {
                                 grid.cell[colX][colY].setFill(Color.RED);
                                 grid.cell[colX][colY].status = Cell.OPENED;
-                                grid.revealAll();
+                                grid.revealAll(Game.FINISHED_LOSS);
                                 timer.getTimeline().stop();
                             }
     
@@ -126,15 +138,33 @@ public class Minesweeper extends Application {
             @Override
             public void handle(ActionEvent event) {
                 SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
+                HBox hBox = (HBox) sceneRoot.informationRibbon.getChildren().get(InformationRibbon.HBOX);
+                Label nameLabel = (Label) hBox.getChildren().get(InformationRibbon.TIMELABEL);
+                Label secondsLabel = (Label) hBox.getChildren().get(InformationRibbon.SECONDSLABEL);
                 Grid grid = sceneRoot.mineGrid;
                 Timer timer = sceneRoot.informationRibbon.timer;
+
+                timer.label.textProperty().addListener(new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue <? extends String> ov, String oldProperty, String newProperty) {
+                        if (Integer.parseInt(newProperty) <= 10) {
+                            nameLabel.setStyle("-fx-text-fill: red;");
+                            timer.label.setStyle("-fx-text-fill: red;");
+                            secondsLabel.setStyle("-fx-text-fill: red;");
+                        }
+                        if (Integer.parseInt(newProperty) == 0) {
+                            grid.revealAll(Game.FINISHED_LOSS);
+                        }
+                    }
+                });        
                 
-                if (!grid.game.finished) {
-                    if (timer.remainingTime.intValue() == timer.startingTime) {
+                if (grid.game.status == Game.NOT_STARTED) {
+                    if (timer.remainingTime.intValue() == timer.startingTime) {// Not needed anymore
                         timer.button.getOnAction().handle(event);
                     }
+                    grid.game.status = Game.ONGOING;
                     grid.setDisable(false);
-                } else {
+                } else {//if (grid.game.status != Game.ONGOING) {
                     getMenuButton(GameScene.APPLICATION, GameScene.LOAD).getOnAction().handle(event);
                 } 
             }
@@ -150,7 +180,8 @@ public class Minesweeper extends Application {
         getMenuButton(GameScene.DETAILS, GameScene.ROUNDS).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                mainStage.close();
+                roundsPopup = new RoundsPopup();
+                roundsPopup.show(mainStage);
             }
         });
 
@@ -161,14 +192,70 @@ public class Minesweeper extends Application {
                 Grid grid = sceneRoot.mineGrid;
                 Timer timer = sceneRoot.informationRibbon.timer;
 
-                grid.revealAll();
+                grid.revealAll(Game.FINISHED_LOSS);
                 if (timer.timeline != null) {
                     timer.getTimeline().stop();
                 }
             }
         });
+       
 
+        mainStage.sceneProperty().addListener(new ChangeListener<Scene>() {
+          
+            @Override
+            public void changed(ObservableValue<? extends Scene> ov, Scene oldScene, Scene newScene) {
+                SceneRoot sceneRoot = (SceneRoot) oldScene.getRoot();
+                Grid grid = (Grid) sceneRoot.getCenter();
 
+                if (grid != null) {
+                    if (recentGamesList.size() == 5) {
+                        recentGamesList.remove(0);
+                    }
+                    recentGamesList.add(new RecentGame(grid));
+
+                    try {
+                        FileWriter myWriter = new FileWriter("Recent_Games.txt");
+                        RecentGame recentGame;
+                        for (int i = 0; i < recentGamesList.size(); i++) {
+                            recentGame = (RecentGame) recentGamesList.get(i);
+                            myWriter.write(recentGame.scenario.numberOfMines.toString() + ", " 
+                                    + recentGame.cellsOpened.toString() + ", "
+                                    + recentGame.scenario.timeLimit.toString() + ", "
+                                    + recentGame.outcome + "\n");
+                        }
+                        myWriter.close();
+                        System.out.println("Successfully wrote to the file.");
+                    } catch (IOException e) {
+                        System.out.println("An error occurred.");
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        SceneRoot sceneRoot = (SceneRoot) mainStage.getScene().getRoot();
+        Grid grid;
+        sceneRoot.centerProperty().addListener(new ChangeListener<Node>() {
+            @Override
+            public void changed(ObservableValue<? extends Node> ov, Node oldNode, Node newNode) {
+                
+                System.out.println("Hello World!");
+                if (newNode != null) {
+                    System.out.println("New Grid.");
+                }
+            }
+
+        });
+        
+        sceneRoot.getChildren().addListener(new ListChangeListener<Node>() {
+            @Override
+            public void onChanged(ListChangeListener.Change<? extends Node> c) {
+                
+                System.out.println("Hello World");
+                
+            }
+        });
+ 
     }
 
     public static void main(String[] args) {

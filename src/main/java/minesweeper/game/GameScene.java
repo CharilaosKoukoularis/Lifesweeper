@@ -22,20 +22,24 @@ public class GameScene extends Scene {
     protected final static Integer SOLUTION = 1;
 
     protected double dimensions;
-    protected TilePane informationRibbon = new TilePane(new Text("Hidden Mines: 45"), new Separator(Orientation.VERTICAL), new Text("Marked Cells: 45"), new Separator(Orientation.VERTICAL), new Text("Time Left: 360 s"));
-    protected MenuBar menuRibbon = new MenuBar(new DropdownMenu("Application", "Create", "Load", "Start", "Exit"), new DropdownMenu("Details", "Rounds", "Solution"));
-    protected Grid mineGrid;
-    protected BorderPane borderPane;
 
     GameScene(double size) {
         super(new SceneRoot(size), size, size);
     }
 
     GameScene(Game game, double size) {
-        super(new SceneRoot(game, size));//, size, size);
+        super(new SceneRoot(game, size));
     }
 
     public void changeGame(Game game) {
-        setRoot(new SceneRoot(game, dimensions));
+        SceneRoot sceneRoot = (SceneRoot) getRoot();
+        sceneRoot.changeGame(game, dimensions);
+        setRoot(sceneRoot);
+        // // sceneRoot = new SceneRoot(game, dimensions);
+        // sceneRoot.mineGrid = new Grid(game, dimensions);
+        // sceneRoot.setCenter(sceneRoot.mineGrid);
+        // sceneRoot.informationRibbon = new InformationRibbon(sceneRoot.mineGrid);
+        // setRoot(sceneRoot);
+        // // setRoot(new SceneRoot(game, dimensions));
     }
 }

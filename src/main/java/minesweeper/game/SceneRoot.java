@@ -24,4 +24,12 @@ public class SceneRoot extends BorderPane {
         setTop(new HBox(menuRibbon, informationRibbon));
         setCenter(mineGrid);
     }
+
+    public void changeGame(Game game, double size) {
+        mineGrid = new Grid(game, size);
+        informationRibbon = new InformationRibbon(mineGrid);
+        informationRibbon.setAlignment(Pos.CENTER);
+        setTop(new HBox(menuRibbon, informationRibbon));
+        setCenter(mineGrid);
+    }
 }
