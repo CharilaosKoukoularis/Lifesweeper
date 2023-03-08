@@ -43,10 +43,38 @@ public class Minesweeper extends Application {
 
         
         GameCreationPopup gameCreationPopup = new GameCreationPopup();
+
+        gameCreationPopup.numberOfMinesSelectionBox.textField.textProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> ov, String oldString, String newString) {
+
+            }
+        });
+
         gameCreationPopup.completionButtonBox.button.setOnAction(new EventHandler<ActionEvent>() {
             
             @Override
             public void handle(ActionEvent event) {
+                try {
+                    FileWriter fileWriter = new FileWriter("Created_Scenario.txt");
+                    String difficulty = "1";
+                    if (gameCreationPopup.difficultySelectionBox.difficultyButton2.isSelected()) {
+                        difficulty = "2";
+                    } 
+                    String hyperBomb = "0";
+                    if (gameCreationPopup.hyperMineSelectionBox.toggleButton.isSelected()) {
+                        hyperBomb = "1";
+                    } 
+                    fileWriter.write(difficulty + "\n" 
+                            + gameCreationPopup.numberOfMinesSelectionBox.textField.getText() + "\n"
+                            + gameCreationPopup.timeLimitSelectionBox.textField.getText() + "\n"
+                            + hyperBomb + "\n");
+                    fileWriter.close();
+                } catch (IOException e) {
+                    System.out.println("Minesweeper.start(...).new EventHandler() {...}.handle()");
+                    e.printStackTrace();
+                }
+
                 gameCreationPopup.hide();
             }
         });

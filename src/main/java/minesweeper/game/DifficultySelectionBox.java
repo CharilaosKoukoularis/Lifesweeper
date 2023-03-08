@@ -11,8 +11,8 @@ public class DifficultySelectionBox extends VBox {
     
     private final Label difficultyLabel = new Label("Difficulty Selection");
     private Label difficultyError = new Label();
-    private RadioButton difficultyButton1 = new RadioButton("1");
-    private RadioButton difficultyButton2 = new RadioButton("2");
+    protected RadioButton difficultyButton1 = new RadioButton("1");
+    protected RadioButton difficultyButton2 = new RadioButton("2");
     private HBox difficultyButtonsBox = new HBox();
     
     DifficultySelectionBox() {
