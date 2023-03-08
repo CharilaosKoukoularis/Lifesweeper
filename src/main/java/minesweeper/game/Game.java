@@ -14,7 +14,11 @@ public class Game {
 
     protected final static int [] gridSize = {9, 16};
 
-    protected boolean finished = false;
+    protected final static int FAILURE = -1;
+    protected final static int ONGOING = 0;
+    protected final static int SUCCESS = 1;
+
+    protected Integer status = ONGOING;
 
     protected Scenario scenario;
 

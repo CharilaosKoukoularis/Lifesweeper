@@ -8,6 +8,11 @@ import javafx.scene.layout.HBox;
 
 public class InformationRibbon extends HBox {
 
+    protected final static int HBOX = 4;
+
+    protected final static int TIMELABEL = 0;
+    protected final static int SECONDSLABEL = 2;
+
     protected Timer timer;
 
     InformationRibbon(Grid grid) {

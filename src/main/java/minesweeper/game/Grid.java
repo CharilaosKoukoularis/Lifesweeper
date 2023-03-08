@@ -147,7 +147,7 @@ public class Grid extends Pane {
         }
     } 
 
-    public void revealAll() {
+    public void revealAll(int result) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (cell[i][j].status != Cell.OPENED) {
@@ -164,6 +164,6 @@ public class Grid extends Pane {
                 }
             }
         }
-        game.finished = true;
+        game.status = result;
     }
 }
