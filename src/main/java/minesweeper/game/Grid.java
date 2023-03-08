@@ -108,6 +108,7 @@ public class Grid extends Pane {
             if (cell[x][y].content == Cell.MINE) {
                 if (cell[x][y].getFill() != Color.ORANGE) {
                     cell[x][y].setFill(Color.BLACK);
+                    // cellsMarked++;
                 }
             } else if (cell[x][y].content == Cell.EMPTY) {
                 

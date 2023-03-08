@@ -91,6 +91,9 @@ public class Minesweeper extends Application {
             public void handle(ActionEvent event) {
 
                 GameLoadPopup gameLoadPopup = new GameLoadPopup();
+                GameLoadChoiceDialog gameLoadChoiceDialog = new GameLoadChoiceDialog();
+                // ScenarioLoadDialog scenarioLoadChoiceDialog = new ScenarioLoadDialog();
+                gameLoadChoiceDialog.show();
                 // gameLoadPopup.show(mainStage);
                 // gameLoadPopup.getContent().get(0).setOnMouseClicked(new EventHandler<Event>() {
                 //     @Override
@@ -205,11 +208,16 @@ public class Minesweeper extends Application {
             }
         });
 
+
+        Stage stage2 = new Stage();
         getMenuButton(GameScene.DETAILS, GameScene.ROUNDS).setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                roundsPopup = new RoundsPopup();
-                roundsPopup.show(mainStage);
+                // roundsPopup = new RoundsPopup();
+                // roundsPopup.show(mainStage);
+                RoundsScene roundsScene = new RoundsScene();
+                stage2.setScene(roundsScene);
+                stage2.show();
             }
         });
 
