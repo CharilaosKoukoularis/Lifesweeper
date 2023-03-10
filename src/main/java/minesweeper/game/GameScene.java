@@ -1,12 +1,6 @@
 package minesweeper.game;
 
-import javafx.geometry.Orientation;
 import javafx.scene.Scene;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.Separator;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.TilePane;
-import javafx.scene.text.Text;
 
 public class GameScene extends Scene {
     

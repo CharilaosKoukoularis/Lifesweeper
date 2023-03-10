@@ -52,7 +52,7 @@ public class Game {
                     + scenario.hyperMineExistence.toString() + "\n");
             myWriter.write(minesList.toString());
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            // System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -71,7 +71,7 @@ public class Game {
             FileWriter myWriter = new FileWriter("mines.txt");
             myWriter.write(builder.toString());
             myWriter.close();
-            System.out.println("Successfully wrote to the file.");
+            // System.out.println("Successfully wrote to the file.");
         } catch (IOException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
@@ -94,7 +94,7 @@ public class Game {
     }
 
 
-    Game(File scenarioFile) {
+    Game(File scenarioFile) throws InvalidScenarioException {
 
         try {
             scenario = new Scenario(scenarioFile);
@@ -121,7 +121,7 @@ public class Game {
                         + scenario.hyperMineExistence.toString() + "\n");
                 myWriter.write(minesList.toString());
                 myWriter.close();
-                System.out.println("Successfully wrote to the file.");
+                // System.out.println("Successfully wrote to the file.");
             } catch (IOException e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
@@ -141,7 +141,7 @@ public class Game {
                 myWriter.write(builder.toString());
                 myWriter.close();
 
-                System.out.println("Successfully wrote to the file.");
+                // System.out.println("Successfully wrote to the file.");
             } catch (IOException e) {
                 System.out.println("An error occurred.");
                 e.printStackTrace();
@@ -149,6 +149,7 @@ public class Game {
         } catch (InvalidScenarioException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+            throw(e);
         }
     }
 
