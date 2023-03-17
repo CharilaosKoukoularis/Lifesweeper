@@ -3,6 +3,7 @@ package minesweeper.game;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Scanner;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -69,9 +70,24 @@ public class MenuRibbon extends MenuBar {
                     @Override
                     public void handle(DialogEvent event) {
                         String loadedFile = scenarioLoadDialog.getResult();
+                        new File("./control/loadedFile.txt").delete();
                         if (loadedFile != null) {
                             try {
-                                new Scenario(new File("./scenarios/" + loadedFile));
+                                File file = new File("./scenarios/" + loadedFile);
+                                new Scenario(file);
+                                FileWriter fileWriter;
+                                Scanner fileScanner;
+                                try {
+                                    fileWriter = new FileWriter(new File("./control/loadedFile.txt"));
+                                    fileScanner = new Scanner(file);
+                                    while (fileScanner.hasNextLine()) {
+                                        fileWriter.write(fileScanner.nextLine() + "\n");
+                                    }
+                                    fileScanner.close();
+                                    fileWriter.close();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
                             } catch (InvalidValueException e) {
                                 new InformationDialog(
                                     "Invalid Scenario",
@@ -93,13 +109,6 @@ public class MenuRibbon extends MenuBar {
         });
 
         getOption(APPLICATION, START).setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
-        getOption(APPLICATION, START).setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-            }
-            
-        });
 
         getOption(APPLICATION, EXIT).setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
         getOption(APPLICATION, EXIT).setOnAction(new EventHandler<ActionEvent>() {

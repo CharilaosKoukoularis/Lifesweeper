@@ -28,71 +28,71 @@ public class Game {
     protected Integer hyperMinePosition;
 
 
-    // Game() {
+    Game() {
 
-    //     scenario = new Scenario();
+        scenario = new Scenario();
 
-    //     int mode = scenario.difficulty - 1;
+        int mode = scenario.difficulty - 1;
 
-    //     //- Number Of Tiles -\\
-    //     final int numberOfTiles = gridSize[mode] * gridSize[mode];
+        //- Number Of Tiles -\\
+        final int numberOfTiles = gridSize[mode] * gridSize[mode];
 
-    //     //- Random Mine Locations -\\
-    //     List<Integer> range = IntStream.range(0, numberOfTiles).boxed().collect(Collectors.toCollection(ArrayList::new));
-    //     Collections.shuffle(range);
-    //     minesList = range.subList(0, scenario.numberOfMines);
-    //     Collections.sort(minesList);
-    //     hyperMinePosition = minesList.get(new Random().nextInt(scenario.numberOfMines));
+        //- Random Mine Locations -\\
+        List<Integer> range = IntStream.range(0, numberOfTiles).boxed().collect(Collectors.toCollection(ArrayList::new));
+        Collections.shuffle(range);
+        minesList = range.subList(0, scenario.numberOfMines);
+        Collections.sort(minesList);
+        hyperMinePosition = minesList.get(new Random().nextInt(scenario.numberOfMines));
 
-    //     //- Scenario-ID Text File -\\ 
-    //     try {
-    //         FileWriter myWriter = new FileWriter("SCENARIO-ID.txt");
-    //         myWriter.write(scenario.difficulty.toString() + "\n" 
-    //                 + scenario.numberOfMines.toString() + "\n"
-    //                 + scenario.timeLimit.toString() + "\n"
-    //                 + scenario.hyperMineExistence.toString() + "\n");
-    //         myWriter.write(minesList.toString());
-    //         myWriter.close();
-    //         // System.out.println("Successfully wrote to the file.");
-    //     } catch (IOException e) {
-    //         System.out.println("An error occurred.");
-    //         e.printStackTrace();
-    //     }
+        //- Scenario-ID Text File -\\ 
+        try {
+            FileWriter myWriter = new FileWriter("SCENARIO-ID.txt");
+            myWriter.write(scenario.difficulty.toString() + "\n" 
+                    + scenario.numberOfMines.toString() + "\n"
+                    + scenario.timeLimit.toString() + "\n"
+                    + scenario.hyperMineExistence.toString() + "\n");
+            myWriter.write(minesList.toString());
+            myWriter.close();
+            // System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
-    //     StringBuilder builder = new StringBuilder();  
+        StringBuilder builder = new StringBuilder();  
   
-    //     for (Integer mine : minesList) {  
-    //         builder.append(((Integer)(mine / gridSize[mode])).toString() + ", " 
-    //         + ((Integer)(mine % gridSize[mode])).toString() + ", "
-    //         + (((scenario.hyperMineExistence == 1) && (mine == hyperMinePosition)) ? "1" : "0") + "\n");
-    //     }
+        for (Integer mine : minesList) {  
+            builder.append(((Integer)(mine / gridSize[mode])).toString() + ", " 
+            + ((Integer)(mine % gridSize[mode])).toString() + ", "
+            + (((scenario.hyperMineExistence == 1) && (mine == hyperMinePosition)) ? "1" : "0") + "\n");
+        }
 
-    //     //- Mine Positions Text File -\\ 
-    //     try {
-    //         FileWriter myWriter = new FileWriter("mines.txt");
-    //         myWriter.write(builder.toString());
-    //         myWriter.close();
-    //         // System.out.println("Successfully wrote to the file.");
-    //     } catch (IOException e) {
-    //         System.out.println("An error occurred.");
-    //         e.printStackTrace();
-    //     }
+        //- Mine Positions Text File -\\ 
+        try {
+            FileWriter myWriter = new FileWriter("./control/mines.txt");
+            myWriter.write(builder.toString());
+            myWriter.close();
+            // System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
 
-    //     File scenarioFile;
-    //     scenarioFile = new File("SCENARIO-ID.txt");
-    //     Scenario savedScenario;
-    //     try {
-    //         savedScenario = new Scenario(scenarioFile);
-    //         System.out.println(savedScenario.difficulty);
-    //         System.out.println(savedScenario.numberOfMines);
-    //         System.out.println(savedScenario.timeLimit);
-    //         System.out.println(savedScenario.hyperMineExistence);
-    //     } catch (InvalidScenarioException e) {
-    //         System.out.println("An error occured.");
-    //         e.printStackTrace();
-    //     }
+        File scenarioFile;
+        scenarioFile = new File("SCENARIO-ID.txt");
+        Scenario savedScenario;
+        try {
+            savedScenario = new Scenario(scenarioFile);
+            System.out.println(savedScenario.difficulty);
+            System.out.println(savedScenario.numberOfMines);
+            System.out.println(savedScenario.timeLimit);
+            System.out.println(savedScenario.hyperMineExistence);
+        } catch (InvalidScenarioException e) {
+            System.out.println("An error occured.");
+            e.printStackTrace();
+        }
         
-    // }
+    }
 
 
     Game(File scenarioFile) throws InvalidScenarioException {
@@ -138,7 +138,7 @@ public class Game {
 
             //- Mine Positions Text File -\\ 
             try {
-                FileWriter myWriter = new FileWriter("mines.txt");
+                FileWriter myWriter = new FileWriter("./control/mines.txt");
                 myWriter.write(builder.toString());
                 myWriter.close();
 

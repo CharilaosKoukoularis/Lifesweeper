@@ -17,7 +17,7 @@ public class RoundsDialog extends Dialog<String> {
 
     RoundsDialog() {
         try {
-            File file = new File("Recent_Games.txt");
+            File file = new File("./control/recentGames.txt");
             Scanner scanner = new Scanner(file);
             String values [];
             int game = 1;
@@ -25,6 +25,7 @@ public class RoundsDialog extends Dialog<String> {
                 values = scanner.nextLine().split(", ");
                 if (values.length == 4) {
                     listView.getItems().add(new RoundHistory(game++, Integer.parseInt(values[0]), Integer.parseInt(values[1]), Integer.parseInt(values[2]), values[3]));
+                    listView.setFocusTraversable(false);
                 }
             }
             scanner.close();
