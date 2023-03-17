@@ -38,7 +38,7 @@ public class GameCreationDialog extends Dialog<String> {
         VBox vBlock = new VBox(10);
         vBlock.setPadding(new Insets(15));
 
-        // scenarioNameSelectionBlock.inputField.setTooltip(new Tooltip("e.g. scenario-id"));
+        // TODO scenarioNameSelectionBlock.inputField.setTooltip(new Tooltip("e.g. scenario-id"));
         difficultySelectionBlock.radioButtons[0].setTooltip(new Tooltip("Mines: 9-11\nTime: 120-180 s\nHyper-Mine: Unavailable"));
         difficultySelectionBlock.radioButtons[1].setTooltip(new Tooltip("Mines: 35-45\nTime: 240-360 s\nHyper-Mine: Available"));
         difficultySelectionBlock.radioButtons[0].getToggleGroup().selectedToggleProperty().addListener(new ChangeListener<Toggle>() {

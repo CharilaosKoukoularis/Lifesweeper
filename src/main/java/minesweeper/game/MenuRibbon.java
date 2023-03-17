@@ -6,14 +6,10 @@ import java.io.IOException;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.ButtonBase;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogEvent;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.input.KeyCombination;
-import javafx.util.Callback;
 
 public class MenuRibbon extends MenuBar {
 
@@ -76,8 +72,18 @@ public class MenuRibbon extends MenuBar {
                         if (loadedFile != null) {
                             try {
                                 new Scenario(new File("./scenarios/" + loadedFile));
-                            } catch (InvalidScenarioException e) {
-                                System.out.println("Invalid Scenario");
+                            } catch (InvalidValueException e) {
+                                new InformationDialog(
+                                    "Invalid Scenario",
+                                    loadedFile + " has an invalid value: "
+                                    + e.getMessage() + "\nPlease load a different file."
+                                ).show();
+                                loadedFile = null;
+                            } catch (InvalidDescriptionException e) {
+                                new InformationDialog(
+                                    "Invalid Scenario", 
+                                    loadedFile + " has an invalid description and cannot be used.\nPlease load a different file."
+                                ).show();
                                 loadedFile = null;
                             }
                         }
@@ -87,6 +93,13 @@ public class MenuRibbon extends MenuBar {
         });
 
         getOption(APPLICATION, START).setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
+        getOption(APPLICATION, START).setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+            }
+            
+        });
 
         getOption(APPLICATION, EXIT).setAccelerator(KeyCombination.keyCombination("Ctrl+X"));
         getOption(APPLICATION, EXIT).setOnAction(new EventHandler<ActionEvent>() {
@@ -97,7 +110,15 @@ public class MenuRibbon extends MenuBar {
         });
 
         getOption(DETAILS, ROUNDS).setAccelerator(KeyCombination.keyCombination("Ctrl+R"));
+        getOption(DETAILS, ROUNDS).setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                new RoundsDialog().show();
+            }      
+        });
+
         getOption(DETAILS, SOLUTION).setAccelerator(KeyCombination.keyCombination("Ctrl+Shift+S"));
+        getOption(DETAILS, SOLUTION);
 
         
     }

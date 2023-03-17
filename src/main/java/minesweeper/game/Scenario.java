@@ -41,7 +41,7 @@ public class Scenario {
 
 
     //- Scenario: Constructor From Text File -\\
-    Scenario(File scenarioFile) throws InvalidScenarioException {
+    Scenario(File scenarioFile) throws InvalidDescriptionException, InvalidValueException {
 
         try {
             Scanner scanner = new Scanner(scenarioFile);
@@ -56,20 +56,25 @@ public class Scenario {
                 int mode = difficulty - 1;
 
                 //- Invalid Value Exceptions -\\
-                if (difficulty != 1 && difficulty != 2) throw(new InvalidValueException("DIFFICULTY"));
-                if (numberOfMines < MIN_MINES[mode] || numberOfMines > MAX_MINES[mode]) throw(new InvalidValueException("BOMBS"));
-                if (timeLimit < MIN_TIME[mode] || timeLimit > MAX_TIME[mode]) throw(new InvalidValueException("TIME"));
-                if (hyperMineExistence == 1 && difficulty == 1) throw(new InvalidValueException("HYPERBOMB"));
+                if (difficulty != 1 && difficulty != 2) {
+                    throw(new InvalidValueException("difficulty = " + difficulty.toString() + "."));
+                }
+                if (numberOfMines < MIN_MINES[mode] || numberOfMines > MAX_MINES[mode]) {
+                    throw(new InvalidValueException("number of mines = " + numberOfMines.toString() + "."));
+                }
+                if (timeLimit < MIN_TIME[mode] || timeLimit > MAX_TIME[mode]) {
+                    throw(new InvalidValueException("time limit = " + timeLimit.toString() + "."));
+                }
+                if (hyperMineExistence == 1 && difficulty == 1) {
+                    throw(new InvalidValueException("hypermine = " + hyperMineExistence.toString() +"."));
+                }
 
             } catch (NumberFormatException e) {
                 scanner.close();
-                System.out.println("An error occured.");
-                e.printStackTrace();
                 throw(new InvalidDescriptionException("Invalid Description"));
             }
             
         } catch (FileNotFoundException e) {
-            System.out.println("An error occured.");
             e.printStackTrace();
         }
     }
