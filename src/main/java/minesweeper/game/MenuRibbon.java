@@ -58,12 +58,34 @@ public class MenuRibbon extends MenuBar {
                         }
                     }
                 });
-                
-
             }
         });
         
         getOption(APPLICATION, LOAD).setAccelerator(KeyCombination.keyCombination("Ctrl+L"));
+        getOption(APPLICATION, LOAD).setOnAction(new EventHandler<ActionEvent>() {
+
+            @Override
+            public void handle(ActionEvent event) {
+                ScenarioLoadDialog scenarioLoadDialog = new ScenarioLoadDialog();
+                scenarioLoadDialog.show();
+                
+                scenarioLoadDialog.setOnCloseRequest(new EventHandler<DialogEvent>() {
+                    @Override
+                    public void handle(DialogEvent event) {
+                        String loadedFile = scenarioLoadDialog.getResult();
+                        if (loadedFile != null) {
+                            try {
+                                new Scenario(new File("./scenarios/" + loadedFile));
+                            } catch (InvalidScenarioException e) {
+                                System.out.println("Invalid Scenario");
+                                loadedFile = null;
+                            }
+                        }
+                    }   
+                });
+            }
+        });
+
         getOption(APPLICATION, START).setAccelerator(KeyCombination.keyCombination("Ctrl+S"));
 
         getOption(APPLICATION, EXIT).setAccelerator(KeyCombination.keyCombination("Ctrl+X"));

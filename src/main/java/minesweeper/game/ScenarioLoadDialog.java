@@ -7,7 +7,6 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.ListView;
-import javafx.stage.Window;
 import javafx.util.Callback;
 
 public class ScenarioLoadDialog extends Dialog<String> {
@@ -15,38 +14,32 @@ public class ScenarioLoadDialog extends Dialog<String> {
     protected ListView<String> listView = new ListView<String>();
 
     ScenarioLoadDialog() {
-        setTitle("Load Game");
+        
         try {
-            File[] files = new File("./").listFiles();
-            String fileName;
+            File[] files = new File("./scenarios/").listFiles();
             for (File file : files) {
                 if (file.isFile()) {
-                    fileName = file.getName();
-                    if (fileName.contains("SCENARIO")) {
-                        listView.getItems().add(fileName);
-                    }
+                    listView.getItems().add(file.getName());
                 }
             }
-
-            ButtonType loadButtonType = new ButtonType("Load", ButtonData.APPLY);
-
+            setTitle("Load Game");
             getDialogPane().setContent(listView);
             getDialogPane().setPadding(new Insets(5));
-            getDialogPane().getButtonTypes().add(new ButtonType("Cancel", ButtonData.CANCEL_CLOSE));
-            getDialogPane().getButtonTypes().add(loadButtonType);
+            getDialogPane().getButtonTypes().addAll(
+                new ButtonType("Cancel", ButtonData.CANCEL_CLOSE), 
+                new ButtonType("Load", ButtonData.APPLY)
+            );
             
             setResultConverter(new Callback<ButtonType, String>() {
                 @Override
-                public String call(ButtonType type) {
-                    if (type == loadButtonType) {
+                public String call(ButtonType button) {
+                    if (button.getButtonData() == ButtonData.APPLY) {
                         return listView.getSelectionModel().getSelectedItem();
+                    } else {
+                        return null;
                     }
-                    return null;
                 }
             });
-
-            Window window = getDialogPane().getScene().getWindow();
-            window.setOnCloseRequest(event -> window.hide());
 
         } catch (NullPointerException e) {
             System.out.println("GameLoadPopup.GameLoadPopup()");
