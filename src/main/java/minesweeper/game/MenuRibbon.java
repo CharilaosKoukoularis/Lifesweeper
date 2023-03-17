@@ -1,7 +1,6 @@
 package minesweeper.game;
 
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;

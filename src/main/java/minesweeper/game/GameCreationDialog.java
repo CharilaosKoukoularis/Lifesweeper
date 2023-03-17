@@ -62,13 +62,13 @@ public class GameCreationDialog extends Dialog<String> {
         });
 
         numberOfMinesSelectionBlock.textField.setTooltip(new Tooltip("Difficulty 1: 9-11\nDifficulty 2: 35-45"));
-        numberOfMinesSelectionBlock.textField.setOnKeyReleased(keyPressHandler);
+        numberOfMinesSelectionBlock.textField.setOnKeyReleased(eventHandler);
 
         timeLimitSelectionBlock.textField.setTooltip(new Tooltip("Difficulty 1: 120-180\nDifficulty 2: 240-360"));
-        timeLimitSelectionBlock.textField.setOnKeyReleased(keyPressHandler);
+        timeLimitSelectionBlock.textField.setOnKeyReleased(eventHandler);
 
         hyperMineSelectionBlock.radioButtons[0].setTooltip(new Tooltip("Difficulty 1: Unavailable\nDifficulty 2: Available"));
-        hyperMineSelectionBlock.radioButtons[0].setOnMouseClicked(clickHandler);
+        hyperMineSelectionBlock.radioButtons[0].setOnMouseClicked(eventHandler);
         
         vBlock.getChildren().addAll(
             scenarioNameSelectionBlock,
@@ -121,24 +121,5 @@ public class GameCreationDialog extends Dialog<String> {
             difficultySelectionBlock.showWarningMessage();
         }
         
-    };
-
-    public EventHandler<MouseEvent> clickHandler = new EventHandler<MouseEvent>() {
-
-        @Override
-        public void handle(MouseEvent event) {
-            difficultySelectionBlock.status = checkInputs();
-            difficultySelectionBlock.showWarningMessage();
-        }
-        
-    };
-
-    public EventHandler<KeyEvent> keyPressHandler = new EventHandler<KeyEvent>() {
-
-        @Override
-        public void handle(KeyEvent event) {
-            difficultySelectionBlock.status = checkInputs();
-            difficultySelectionBlock.showWarningMessage();
-        }
     };
 }

@@ -3,13 +3,10 @@ package minesweeper.game;
 import java.io.File;
 
 import javafx.geometry.Insets;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.ListView;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.Window;
 import javafx.util.Callback;
 
