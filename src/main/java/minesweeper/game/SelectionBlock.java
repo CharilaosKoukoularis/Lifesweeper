@@ -1,5 +1,7 @@
 package minesweeper.game;
 
+import java.io.File;
+
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
@@ -57,26 +59,26 @@ public class SelectionBlock extends VBox {
         getChildren().addAll(title, textField, warningMessage);
     }
 
-    public Integer getInput() {
+    public String getInput() {
         if (selectionMethod == RADIOBUTTONS) {
             if (radioButtons[0].isSelected()) {
-                return 1;
+                return "1";
             } else if (radioButtons[1].isSelected()) {
-                return 2;
+                return "2";
             } else {
-                return EMPTY;
+                return null;
             }
         } else if (selectionMethod == BUTTON) {
             if (radioButtons[0].isSelected()) {
-                return 1;
+                return "1";
             } else {
-                return 0;
+                return "0";
             }
         } else {
             try {
-                return Integer.parseInt(textField.getText());
+                return textField.getText();
             } catch (NumberFormatException e) {
-                return EMPTY;
+                return null;
             }
         }
     }
@@ -105,15 +107,31 @@ public class SelectionBlock extends VBox {
     }
 
     public int checkStatus() {
-        int value = getInput();
-        if (value == EMPTY) {
+        String string = getInput();
+        if (string == null) {
             if (status != INITIAL) {
                 status = EMPTY;
             }
-        } else if (value < lowerBound || value > upperBound) {
-            status = INVALID;
         } else {
-            status = VALID;
+            try {
+                Integer value = Integer.valueOf(string);
+                if (value < lowerBound || value > upperBound) {
+                    status = INVALID;
+                } else {
+                    status = VALID;
+                }
+            } catch (NumberFormatException e) {
+                File[] files = new File("./scenarios/").listFiles();
+                status = VALID;
+                for (File file : files) {
+                    if (file.isFile()) {
+                        if (file.getName().equals(string + ".txt")) {
+                            status = INVALID;
+                            break;
+                        }
+                    }
+                }
+            }
         }
         return status;
     }

@@ -5,23 +5,18 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.Tooltip;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.layout.VBox;
+import javafx.util.Callback;
 
 public class GameCreationDialog extends Dialog<String> {
 
-    protected final static int DIFFICULTY = 0;
-    protected final static int NUMBER_OF_MINES = 1;
-    protected final static int TIME_LIMIT = 2;
-    protected final static int HYPERMINE = 3;
     protected final SelectionBlock scenarioNameSelectionBlock = new SelectionBlock(
         "Scenario Name", "Name Already In Use", new TextField() 
     );
@@ -83,6 +78,22 @@ public class GameCreationDialog extends Dialog<String> {
         getDialogPane().getButtonTypes().add(new ButtonType("Cancel", ButtonData.CANCEL_CLOSE));
         getDialogPane().getButtonTypes().add(new ButtonType("Create", ButtonData.APPLY));
         scenarioNameSelectionBlock.textField.requestFocus();  
+
+        setResultConverter(new Callback<ButtonType,String>() {
+
+            @Override
+            public String call(ButtonType button) {
+                if (button.getButtonData() == ButtonData.APPLY) {
+                    return scenarioNameSelectionBlock.getInput() + ":\n"
+                        + difficultySelectionBlock.getInput() + "\n"
+                        + numberOfMinesSelectionBlock.getInput() + "\n"
+                        + timeLimitSelectionBlock.getInput() + "\n"
+                        + hyperMineSelectionBlock.getInput();
+                } else {
+                    return null;
+                }
+            }  
+        });
     }
 
     public int checkInputs() {
@@ -91,6 +102,9 @@ public class GameCreationDialog extends Dialog<String> {
         if (SelectionBlock.difficulty < 1 || SelectionBlock.difficulty > 2) {
             return SelectionBlock.EMPTY;
         } else {
+            scenarioNameSelectionBlock.checkStatus();
+            scenarioNameSelectionBlock.showWarningMessage();
+
             numberOfMinesSelectionBlock.setBounds(Scenario.MIN_MINES[mode], Scenario.MAX_MINES[mode]);
             numberOfMinesSelectionBlock.checkStatus();
             numberOfMinesSelectionBlock.showWarningMessage();
