@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
+import javafx.geometry.Insets;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ButtonBar.ButtonData;
 
-public class RoundsDialog extends Dialog<ListView<RoundHistory>> {
+public class RoundsDialog extends Dialog<String> {
     
     protected ListView<RoundHistory> listView = new ListView<RoundHistory>();
 
@@ -28,7 +32,18 @@ public class RoundsDialog extends Dialog<ListView<RoundHistory>> {
         } catch (FileNotFoundException e) {
             System.out.println("An error occured.");
             e.printStackTrace();
+        } finally {
+            setTitle("Top 5 Most Recent Rounds");
+            if (listView.getItems().isEmpty()) {
+                getDialogPane().setContent(new Label("No Recent Games"));
+            }
+            else {
+                getDialogPane().setContent(listView);
+            }
+            getDialogPane().setMinSize(250, 100);
+            getDialogPane().setPadding(new Insets(5));
+            getDialogPane().getButtonTypes().add(new ButtonType("Close", ButtonData.CANCEL_CLOSE));
         }
-        this.setGraphic(listView);
+        
     }
 }

@@ -13,18 +13,33 @@ public class InformationRibbon extends HBox {
     protected final static int TIMELABEL = 0;
     protected final static int SECONDSLABEL = 2;
 
-    protected Timer timer;
+    protected Grid grid;
 
-    InformationRibbon(Grid grid) {
-        super(new Label("Hidden Mines: " + grid.game.scenario.numberOfMines.toString()),
-                new Separator(Orientation.VERTICAL),
-                new Label("Marked Cells: " + grid.cellsMarked.toString()),
-                new Separator(Orientation.VERTICAL)); 
-                
-        timer = new Timer(grid.game.scenario.timeLimit);
-        HBox hBox = new HBox(new Label("Remaining Time: "), timer.label, new Label(" s"));
+    InformationRibbon(Grid newGrid) {
+        grid = newGrid;
+        Label markedLabel = new Label("Marked Cells: " + getMarkedCells().toString());
+        HBox hBox = new HBox(new Label("Remaining Time: "), getTimer(), new Label(" s"));
         hBox.setAlignment(Pos.CENTER);
         setSpacing(5);
-        getChildren().add(hBox);
+        setAlignment(Pos.CENTER);
+        getChildren().addAll(
+            new Label("Hidden Mines: " + getNumberOfMines().toString()),
+            new Separator(Orientation.VERTICAL),
+            markedLabel,
+            new Separator(Orientation.VERTICAL),
+            hBox
+        );
+    }
+
+    public Timer getTimer() {
+        return grid.game.timer;
+    }
+
+    public Integer getNumberOfMines() {
+        return grid.game.scenario.numberOfMines;
+    }
+
+    public Integer getMarkedCells() {
+        return grid.cellsMarked;
     }
 }

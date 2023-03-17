@@ -5,48 +5,85 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
 
-public class Timer {
+public class Timer extends Label {
 
-    protected Label label = new Label();
-    protected Button button = new Button("Timer");
+    private static final int INITIAL = 0;
+    private static final int RUNNING = 1;
+    private static final int STOPPED = -1;
 
-    protected Integer startingTime;
-    protected IntegerProperty remainingTime;
-    protected Timeline timeline;
+    private Integer startingTime;
+    private IntegerProperty remainingTime;
+    private Timeline timeline;
+    private Integer status;
 
+    /**
+     * Creates an animated countdown timer label. 
+     * 
+     * @param   seconds the desired duration of the countdown (in seconds)
+     *                  
+     */
     Timer(Integer seconds) {
-
         startingTime = seconds;
-        remainingTime = new SimpleIntegerProperty(startingTime); 
-
-        button.setOnAction(new EventHandler<ActionEvent>() {
-
-            @Override
-            public void handle(ActionEvent event) {
-                // if (timeline != null) {
-                //     timeline.stop();
-                // }
-                remainingTime.set(startingTime);
-                timeline = new Timeline();
-                timeline.getKeyFrames().add(
-                        new KeyFrame(Duration.seconds(startingTime + 1),
-                        new KeyValue(remainingTime, 0)));
-                timeline.playFromStart();
-            }
-        });
-
-        label.setText(startingTime.toString());
-        label.textProperty().bind(remainingTime.asString());
+        remainingTime = new SimpleIntegerProperty(startingTime);
+        status = INITIAL;
+        setText(startingTime.toString());
+        textProperty().bind(remainingTime.asString());
     }
 
-    Timeline getTimeline() {
-        return timeline;
-    
+    /**
+     * Starts the countdown, from the given starting time until 0, 
+     * decreasing by 1 every second.
+     */
+    public void start() {
+        if (status == INITIAL) {
+            remainingTime.set(startingTime);
+            timeline = new Timeline();
+            timeline.getKeyFrames().add(new KeyFrame(
+                Duration.seconds(startingTime + 1),
+                new KeyValue(remainingTime, 0)
+            ));
+            timeline.playFromStart();
+            status = RUNNING;
+        }
+    }
+
+    /**
+     * Stops the countdown.
+     */
+    public void stop() {
+        if (timeline != null) {
+            timeline.stop();
+            status = STOPPED;
+        }
+    }
+
+    /**
+     * Returns a true-false statement depending on whether the timer has started (false) or not (true).
+     * 
+     * @return true if the timer's status is the initial, false otherwise 
+     */
+    public boolean notStarted() {
+        return (status == INITIAL);
+    }
+
+    /**
+     * Returns a true-false statement depending on whether the timer has stopped (true) or not (false).
+     * 
+     * @return true if the timer is stopped, false otherwise 
+     */
+    public boolean isStopped() {
+        return (status == STOPPED);
+    }
+
+    /**
+     * Returns a true-false statement depending on whether the timer is running (true) or not (not).
+     * 
+     * @return true if the timer's status is the initial, false otherwise 
+     */
+    public boolean isRunning() {
+        return (status == RUNNING);
     }
 }

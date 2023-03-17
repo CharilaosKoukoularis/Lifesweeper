@@ -8,18 +8,16 @@ import javafx.scene.text.Text;
 public class Grid extends Pane {
     
     // private double gridWidth;
-    protected double cellWidth;
     protected Integer cellsOpened = 0;    
     protected Integer cellsMarked = 0;
     protected Integer markedMines = 0;
+
+    protected double cellWidth;
     protected double width;
     protected int size;
 
-    public Cell [][] cell;
-    public Integer [][] neighborMatrix;
-
+    protected Cell [][] cell;
     protected Game game;
-
 
     Grid(Game gameName, double gridWidth) {
 
@@ -49,7 +47,9 @@ public class Grid extends Pane {
                 getChildren().add(cell[i][j]);  
             }
         }
-        cell[game.hyperMinePosition % size][game.hyperMinePosition / size].hyperMine = true;
+        if (game.scenario.difficulty == 2) {
+            cell[game.hyperMinePosition % size][game.hyperMinePosition / size].hyperMine = true;
+        }
 
         int [][] temporaryMatrix = new int [size + 2][size + 2];
         for (int i = 0; i < size + 2; i++) {
@@ -63,25 +63,24 @@ public class Grid extends Pane {
             }
         }
 
-        neighborMatrix = new Integer [size][size];
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                neighborMatrix[i][j] = 0;
+                cell[i][j].neighbors = 0;
                 for (int k = 0; k < 3; k++) {
                     for (int l = 0; l < 3; l++) {  
-                        neighborMatrix[i][j] += temporaryMatrix[i + k][j + l];
+                        cell[i][j].neighbors += temporaryMatrix[i + k][j + l];
                     }
                 }
-                if (neighborMatrix[i][j] != 0) {
-                    cell[i][j].hint.setText(neighborMatrix[i][j].toString());
-                    if (neighborMatrix[i][j] == 1) {
+                if (cell[i][j].neighbors != 0) {
+                    cell[i][j].hint.setText(cell[i][j].neighbors.toString());
+                    if (cell[i][j].neighbors == 1) {
                         cell[i][j].hint.fillProperty().set(Color.BLUE);
-                    } else if (neighborMatrix[i][j] == 2) {
+                    } else if (cell[i][j].neighbors == 2) {
                         cell[i][j].hint.fillProperty().set(Color.GREEN);
-                    } else if (neighborMatrix[i][j] == 3) {
+                    } else if (cell[i][j].neighbors == 3) {
                         cell[i][j].hint.fillProperty().set(Color.PURPLE);
-                    } else if (neighborMatrix[i][j] >= 4) {
+                    } else if (cell[i][j].neighbors >= 4) {
                         cell[i][j].hint.fillProperty().set(Color.RED);
                     }
                 }
@@ -139,7 +138,7 @@ public class Grid extends Pane {
         cellsOpened++;
         getChildren().add(cell[x][y].hint);
         
-        if (neighborMatrix[x][y] == 0) {
+        if (cell[x][y].neighbors == 0) {
             for (int k = -1; k <= 1; k++) {
                 for (int l = -1; l <= 1; l++) {
                     openAdjacent(x + k, y + l);
@@ -148,7 +147,7 @@ public class Grid extends Pane {
         }
     } 
 
-    public void revealAll(int result) {
+    public void revealAll(int outcome) {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (cell[i][j].status != Cell.OPENED) {
@@ -165,6 +164,6 @@ public class Grid extends Pane {
                 }
             }
         }
-        game.status = result;
+        game.end(outcome);
     }
 }
